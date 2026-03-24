@@ -643,6 +643,18 @@ The template file lives at:
 
 Copy it, inject the DATA block, save to reports/, open it.
 
+**Injection method (Python — use string position, NOT regex):**
+```python
+with open(template_path, 'r') as f:
+    template = f.read()
+start = template.find('const DATA={')
+end = template.find('};', start) + 2
+result = template[:start] + new_data_block + template[end:]
+with open(out_path, 'w') as f:
+    f.write(result)
+```
+Do NOT use `re.sub` with the comment pattern — the `──` Unicode dashes may not match.
+
 
 ---
 
