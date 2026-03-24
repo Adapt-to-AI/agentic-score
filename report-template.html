@@ -756,7 +756,7 @@ renderDims(DATA.scores);
 renderNextLevel(currentChar.rank, nextChar||{name:'Maximum'});
 renderRadar(DATA.scores);
 renderInsights(DATA);
-renderMoves(generateMoves(DATA.scores));
+renderMoves((DATA.moves && DATA.moves.length) ? DATA.moves : generateMoves(DATA.scores));
 renderBreakdown(DATA.scores, DATA.checkResults);
 const CHARACTER_DETAILS=[
   {
