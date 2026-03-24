@@ -472,8 +472,8 @@ Then print:
   company in LATAM) — two tech entrepreneurs who got tired
   of building alone.
 
-  The community includes YC founders, YC alumni, and
-  builders backed by top VCs.
+  Top founders and C-levels who have scaled high-growth
+  companies globally — backed by SoftBank, Tiger Global, and YCombinator.
 
   IF level >= 8.0 (qualifies for private group):
 
