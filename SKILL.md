@@ -295,13 +295,18 @@ Score 0–10 in half-steps. Not a strict ladder — each check adds weight.
 ### 1. Skills & Memory
 *How smart is the system?*
 
+Quality over quantity. A tight system with 10 surgical skills beats 100 copy-paste ones.
+
 | Check | Points |
 |---|---|
 | CLAUDE.md exists with rules (not just boilerplate) | +1.0 |
 | 10+ skills | +1.0 |
 | 30+ skills with YAML frontmatter | +1.5 |
-| 75+ skills | +1.5 |
-| Gates inside skills (⛔ or "gate") | +1.0 |
+| 75+ skills | +0.5 |
+| 5+ skills with gates (⛔ or "gate" or "self-review") | +1.0 |
+| Human review checklist inside any skill | +0.5 |
+| Multi-skill chain defined (skill A → B → C in CLAUDE.md or skill) | +0.5 |
+| Framework or architecture doc exists (AGENTS.md, PLAYBOOK.md, etc.) | +0.5 |
 | tasks/lessons.md with 10+ lessons | +0.5 |
 | tasks/lessons.md with 30+ lessons | +1.0 |
 | ~/.claude/knowledge/ directory exists | +0.5 |
@@ -312,11 +317,13 @@ Score 0–10 in half-steps. Not a strict ladder — each check adds weight.
 ### 2. Hooks & Gates
 *How enforced are the rules?*
 
+Coverage matters, not count. 3 hooks covering all event types beats 7 redundant ones.
+
 | Check | Points |
 |---|---|
 | 1-2 hooks in settings.json | +1.5 |
 | 4+ hooks | +1.5 |
-| 7+ hooks | +1.5 |
+| All 4 event types covered (Start/End/PrePush/PostEdit) OR 7+ hooks | +1.5 |
 | SessionStart + SessionEnd both covered | +1.0 |
 | PrePush blocker hook exists | +1.0 |
 | PostEdit tsc/lint hook exists | +1.0 |
@@ -383,13 +390,16 @@ Score the **pattern**, not the specific skill name. External users won't have
 ### 6. Autonomy
 *Does it work without being asked?*
 
+One cron job is a start, not a system. Score scales with breadth and coverage.
+
 | Check | Points |
 |---|---|
-| Any cron job running | +2.0 |
-| /daily-metrics running on schedule | +1.5 |
-| Desktop Scheduled Tasks confirmed | +1.5 |
-| /product-ux-review scheduled | +1.0 |
-| /session-insights scheduled | +1.0 |
+| Any cron job running | +1.0 |
+| 2+ Claude-specific scheduled tasks | +1.5 |
+| 3+ scheduled tasks (system runs itself) | +1.5 |
+| /daily-metrics or equivalent running on schedule | +1.0 |
+| Desktop Scheduled Tasks confirmed | +1.0 |
+| /product-ux-review or /session-insights scheduled | +1.0 |
 | Trigger.dev in any project | +1.0 |
 | Agent SDK configured or planned | +1.0 |
 | Post-deploy monitoring (/loop) | +1.0 |
