@@ -43,9 +43,9 @@ Scans your Claude Code setup across 6 dimensions, assigns you a score and a Drag
 ```bash
 mkdir -p ~/.claude/skills/agentic-score
 curl -o ~/.claude/skills/agentic-score/SKILL.md \
-  https://raw.githubusercontent.com/adapttoai/agentic-score/main/SKILL.md
+  https://raw.githubusercontent.com/Adapt-to-AI/agentic-score/main/SKILL.md
 curl -o ~/.claude/skills/agentic-score/report-template.html \
-  https://raw.githubusercontent.com/adapttoai/agentic-score/main/report-template.html
+  https://raw.githubusercontent.com/Adapt-to-AI/agentic-score/main/report-template.html
 ```
 
 Then in any Claude Code session:
