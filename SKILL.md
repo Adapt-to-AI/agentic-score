@@ -15,6 +15,232 @@ Assigns a Dragon Ball character and outputs the top 3 highest-leverage next move
 
 ---
 
+## Step 0 — Scan (silent, broad, tool-agnostic)
+
+Run all checks silently before producing any output. Search broadly — external users
+have different paths, tool names, and conventions. Never assume a specific path.
+Score the *outcome*, not the specific tool used.
+
+```bash
+# ── SKILLS ──────────────────────────────────────────────────────────────────
+SKILL_COUNT=$(ls ~/.claude/skills/ 2>/dev/null | wc -l | tr -d ' ')
+FRONTMATTER_COUNT=$(find ~/.claude/skills/ -name "SKILL.md" | xargs grep -l "^---" 2>/dev/null | wc -l | tr -d ' ')
+MISSING_FM=$((SKILL_COUNT - FRONTMATTER_COUNT))
+GATE_COUNT=$(grep -rl "gate\|⛔\|GATE\|self.review\|design.preview" ~/.claude/skills/ 2>/dev/null | wc -l | tr -d ' ')
+
+# ── HOOKS ───────────────────────────────────────────────────────────────────
+HOOK_COUNT=$(cat ~/.claude/settings.json 2>/dev/null | python3 -c \
+  "import sys,json; d=json.load(sys.stdin); hooks=d.get('hooks',{}); \
+  print(sum(len(v) if isinstance(v,list) else 1 for v in hooks.values()))" \
+  2>/dev/null || echo "0")
+
+# ── CLAUDE.MD ───────────────────────────────────────────────────────────────
+CLAUDE_LINES=$(wc -l < ~/.claude/CLAUDE.md 2>/dev/null || echo "0")
+RULE_COUNT=$(grep -c "RULE\|ENFORCEMENT\|GATE" ~/.claude/CLAUDE.md 2>/dev/null || echo "0")
+
+# ── MEMORY & KNOWLEDGE ──────────────────────────────────────────────────────
+# Search broadly — failures/ may be at different paths
+FAILURES_COUNT=$(find ~/.claude -type d -name "failures" 2>/dev/null | \
+  xargs -I{} ls {} 2>/dev/null | wc -l | tr -d ' ')
+# Lessons: any markdown with 5+ ### headers anywhere in ~/.claude/
+LESSONS_COUNT=$(find ~/.claude -name "*.md" 2>/dev/null | \
+  xargs grep -l "^###" 2>/dev/null | \
+  xargs grep -c "^###" 2>/dev/null | \
+  awk -F: '$2>=5 {sum+=$2} END{print sum+0}')
+# Knowledge base: any persistent knowledge folder
+KNOWLEDGE_EXISTS=$(find ~/.claude -type d \( -name "knowledge" -o -name "memory" -o -name "learnings" \) 2>/dev/null | head -1 | grep -q "." && echo "YES" || echo "NO")
+
+# ── PROJECTS ────────────────────────────────────────────────────────────────
+# Search common project locations — not just ~/projects/
+PROJECT_CLAUDE_COUNT=$(find ~ -name "CLAUDE.md" \
+  -not -path "~/.claude/*" \
+  -not -path "*/node_modules/*" \
+  -maxdepth 6 2>/dev/null | wc -l | tr -d ' ')
+PRODUCT_STATE_COUNT=$(find ~ -name "PRODUCT_STATE.md" -maxdepth 6 2>/dev/null | wc -l | tr -d ' ')
+# Mission Control: search by name, not path
+MISSION_CONTROL=$(find ~ -name "MISSION_CONTROL.md" -maxdepth 5 2>/dev/null | head -1 | grep -q "." && echo "YES" || echo "NO")
+STATUS_SKILL=$(find ~/.claude/skills -name "SKILL.md" 2>/dev/null | \
+  xargs grep -l "status\|mission.control\|product.state" 2>/dev/null | head -1 | grep -q "." && echo "YES" || echo "NO")
+
+# ── SELF-IMPROVING WIRES ────────────────────────────────────────────────────
+# Score the pattern, not the specific skill name
+# Wire 1: any skill that updates CLAUDE.md
+WIRE1=$(find ~/.claude/skills -name "SKILL.md" 2>/dev/null | \
+  xargs grep -l "CLAUDE\.md\|claude\.md" 2>/dev/null | head -1 | grep -q "." && echo "YES" || echo "NO")
+# Wire 2: any skill that handles test failures automatically
+WIRE2=$(find ~/.claude/skills -name "SKILL.md" 2>/dev/null | \
+  xargs grep -l "test.*fail\|fail.*fix\|fix.bug\|auto.*fix" 2>/dev/null | head -1 | grep -q "." && echo "YES" || echo "NO")
+# Wire 3: any persistent knowledge folder with files
+WIRE3=$(find ~/.claude -type d \( -name "knowledge" -o -name "memory" \) 2>/dev/null | \
+  xargs -I{} find {} -name "*.md" 2>/dev/null | head -1 | grep -q "." && echo "YES" || echo "NO")
+# Wire 4: any skill that learns from feedback/outreach
+WIRE4=$(find ~/.claude/skills -name "SKILL.md" 2>/dev/null | \
+  xargs grep -l "learning\|feedback\|outreach.*learn\|style.rule" 2>/dev/null | head -1 | grep -q "." && echo "YES" || echo "NO")
+WIRE_COUNT=$(echo "$WIRE1 $WIRE2 $WIRE3 $WIRE4" | tr ' ' '\n' | grep -c "YES" || echo "0")
+
+# ── CONTROL / INFRASTRUCTURE ────────────────────────────────────────────────
+# Tool-agnostic: score the outcome (Mac-off capability), not CCBot specifically
+# Check any Telegram bridge
+TELEGRAM_BRIDGE=$(find ~ -name ".env" -maxdepth 5 2>/dev/null | \
+  xargs grep -l "TELEGRAM\|BOT_TOKEN" 2>/dev/null | head -1 | grep -q "." && echo "YES" || echo "NO")
+# Check any running Claude server (systemd, tmux, screen)
+CLAUDE_SERVER=$(systemctl list-units --all 2>/dev/null | grep -i "claude\|ccbot\|ccmux" | grep -q "." && echo "YES" || \
+  tmux ls 2>/dev/null | grep -qi "claude\|ccbot\|project" && echo "YES" || echo "NO")
+# Check for claude-mem or similar memory tool
+CLAUDE_MEM=$(pip show claude-mem 2>/dev/null | grep -q "Name" && echo "YES" || \
+  find ~ -name "claude-mem" -o -name ".claude-mem" 2>/dev/null | head -1 | grep -q "." && echo "YES" || echo "NO")
+# Count Telegram topics (any bridge config)
+TELEGRAM_TOPICS=$(find ~ -name ".env" -maxdepth 5 2>/dev/null | \
+  xargs grep -h "TOPIC\|topic\|PROJECT" 2>/dev/null | grep -v "^#" | wc -l | tr -d ' ')
+# Remote Control
+REMOTE_CONTROL=$(grep -i "remote.control\|remoteControl" ~/.claude/settings.json 2>/dev/null | grep -q "." && echo "YES" || echo "NO")
+
+# ── AUTONOMY ────────────────────────────────────────────────────────────────
+CRON_COUNT=$(crontab -l 2>/dev/null | grep -v "^#" | grep -c "." || echo "0")
+# Any Claude skill running on schedule
+SCHEDULED_COUNT=$(crontab -l 2>/dev/null | grep -i "claude\|skill\|ccbot" | grep -c "." || echo "0")
+AGENT_SDK=$(find ~ -name "package.json" -maxdepth 6 2>/dev/null | \
+  xargs grep -l "agent-sdk\|claude-code" 2>/dev/null | head -1 | grep -q "." && echo "YES" || echo "NO")
+# Trigger.dev or any webhook-based automation
+AUTOMATION_TOOL=$(find ~ -name "*.json" -o -name "*.ts" -o -name "*.js" 2>/dev/null | \
+  xargs grep -l "trigger.dev\|webhook\|n8n\|zapier" 2>/dev/null | head -1 | grep -q "." && echo "YES" || echo "NO")
+
+# ── MCP SERVERS ─────────────────────────────────────────────────────────────
+MCP_COUNT=$(cat ~/.claude/settings.json 2>/dev/null | \
+  python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d.get('mcpServers',{})))" \
+  2>/dev/null || echo "0")
+```
+
+Print debug block before scoring:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SCAN RESULTS
+
+  Skills:      [SKILL_COUNT] total · [FRONTMATTER_COUNT] wired · [MISSING_FM] missing frontmatter
+  Hooks:       [HOOK_COUNT]
+  Rules:       [RULE_COUNT] in CLAUDE.md ([CLAUDE_LINES] lines)
+  Lessons:     [LESSONS_COUNT]
+  Failures:    [FAILURES_COUNT] files
+  Knowledge:   [KNOWLEDGE_EXISTS]
+  Projects:    [PROJECT_CLAUDE_COUNT] with CLAUDE.md · [PRODUCT_STATE_COUNT] with PRODUCT_STATE.md
+  Mission Ctrl:[MISSION_CONTROL]
+  Wires:       [WIRE_COUNT]/4 (W1:[WIRE1] W2:[WIRE2] W3:[WIRE3] W4:[WIRE4])
+  Telegram:    [TELEGRAM_BRIDGE] bridge · [TELEGRAM_TOPICS] topics
+  Server:      [CLAUDE_SERVER]
+  claude-mem:  [CLAUDE_MEM]
+  Cron jobs:   [CRON_COUNT] · Claude scheduled: [SCHEDULED_COUNT]
+  Agent SDK:   [AGENT_SDK]
+  MCP servers: [MCP_COUNT]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Key principle for external users:** If something looks like it should exist but wasn't
+detected, note it in the debug block but do NOT silently score 0. Instead note:
+"[item] not detected — may exist under different path or name. Score may be conservative."
+
+
+
+```bash
+# Skills
+SKILL_COUNT=$(ls ~/.claude/skills/ 2>/dev/null | wc -l | tr -d ' ')
+FRONTMATTER_COUNT=$(find ~/.claude/skills/ -name "SKILL.md" | xargs grep -l "^---" 2>/dev/null | wc -l | tr -d ' ')
+MISSING_FM=$((SKILL_COUNT - FRONTMATTER_COUNT))
+
+# Hooks
+HOOK_COUNT=$(cat ~/.claude/settings.json 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); hooks=d.get('hooks',{}); print(sum(len(v) if isinstance(v,list) else 1 for v in hooks.values()))" 2>/dev/null || echo "0")
+
+# CLAUDE.md
+CLAUDE_LINES=$(wc -l < ~/.claude/CLAUDE.md 2>/dev/null || echo "0")
+RULE_COUNT=$(grep -c "RULE\|ENFORCEMENT\|GATE" ~/.claude/CLAUDE.md 2>/dev/null || echo "0")
+
+# Memory & knowledge
+FAILURES_COUNT=$(ls ~/.claude/knowledge/failures/ 2>/dev/null | wc -l | tr -d ' ')
+LESSONS_COUNT=$(grep -c "^###" ~/.claude/knowledge/*/lessons.md 2>/dev/null || grep -rc "^###" ~/.claude/tasks/lessons.md 2>/dev/null | awk -F: '{sum+=$2} END{print sum}' || echo "0")
+
+# Projects — check multiple locations
+PROJECT_COUNT_LOCAL=$(find ~/projects/ -name "CLAUDE.md" -maxdepth 3 2>/dev/null | wc -l | tr -d ' ')
+PROJECT_COUNT_HOME=$(find ~ -name "CLAUDE.md" -not -path "~/.claude/*" -maxdepth 5 2>/dev/null | wc -l | tr -d ' ')
+MISSION_CONTROL=$(ls ~/.claude/MISSION_CONTROL.md 2>/dev/null && echo "FOUND" || echo "NOT FOUND at ~/.claude/MISSION_CONTROL.md")
+PRODUCT_STATE_COUNT=$(find ~ -name "PRODUCT_STATE.md" -maxdepth 6 2>/dev/null | wc -l | tr -d ' ')
+
+# Self-improving wires — check multiple signals
+WIRE1=$(grep -l "CLAUDE.md\|claude\.md" ~/.claude/skills/session-insights/SKILL.md 2>/dev/null && echo "FOUND" || echo "NOT FOUND — grep 'CLAUDE.md' in session-insights/SKILL.md returned empty")
+WIRE2=$(grep -rl "fix.bug\|fix_bug" ~/.claude/skills/ 2>/dev/null | head -1 | grep -q "." && echo "FOUND" || echo "NOT FOUND — no fix-bug reference in deploy-and-verify or similar")
+WIRE3=$(ls ~/.claude/knowledge/ 2>/dev/null && echo "FOUND (knowledge/ exists)" || echo "NOT FOUND")
+WIRE4=$(grep -rl "outreach\|style.rules\|style_rules" ~/.claude/knowledge/ 2>/dev/null | head -1 | grep -q "." && echo "FOUND" || echo "NOT FOUND")
+
+# Control / infrastructure
+CCBOT=$(ls ~/.ccbot/.env 2>/dev/null && echo "FOUND at ~/.ccbot/.env" || echo "NOT FOUND at ~/.ccbot/.env")
+SYSTEMD=$(find /etc/systemd /home -name "ccbot.service" 2>/dev/null | head -1 | grep -q "." && echo "FOUND" || echo "NOT FOUND")
+TELEGRAM_TOKEN=$(cat ~/.ccbot/.env 2>/dev/null | grep -i "BOT_TOKEN" | grep -q "." && echo "SET" || echo "NOT SET")
+TELEGRAM_TOPICS=$(cat ~/.ccbot/.env 2>/dev/null | grep -i "TOPIC\|topic" | wc -l | tr -d ' ')
+CLAUDE_MEM=$(pip show claude-mem 2>/dev/null | grep -q "Name" && echo "INSTALLED" || which claude-mem 2>/dev/null || echo "NOT FOUND")
+
+# Autonomy
+CRON_COUNT=$(crontab -l 2>/dev/null | grep -v "^#" | grep -c "." || echo "0")
+SCHEDULED_COUNT=$(find ~ -name "*.service" -path "*/systemd/*" 2>/dev/null | wc -l | tr -d ' ')
+AGENT_SDK=$(find ~ -name "*.json" -o -name "*.js" 2>/dev/null | xargs grep -l "agent-sdk\|AgentOptions\|ClaudeAgent" 2>/dev/null | head -1 | grep -q "." && echo "FOUND" || echo "NOT FOUND")
+```
+
+Print the debug output in this format before scoring:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SCAN DEBUG — what was found
+
+  SKILLS
+  ✓ Total skills:        [SKILL_COUNT]
+  ✓ With frontmatter:    [FRONTMATTER_COUNT]
+  ✗ Missing frontmatter: [MISSING_FM] ← these cannot auto-trigger
+
+  HOOKS
+  ✓ Hook count:          [HOOK_COUNT]
+
+  CLAUDE.MD
+  ✓ Lines:               [CLAUDE_LINES]
+  ✓ Rules found:         [RULE_COUNT]
+
+  KNOWLEDGE
+  ✓ failures/ files:     [FAILURES_COUNT]
+  ✓ Lessons:             [LESSONS_COUNT]
+
+  PROJECTS
+  ✓ CLAUDE.md files:     [PROJECT_COUNT_LOCAL] (~/projects/) / [PROJECT_COUNT_HOME] (home)
+  ✓ PRODUCT_STATE.md:    [PRODUCT_STATE_COUNT]
+  - Mission Control:     [MISSION_CONTROL]
+
+  SELF-IMPROVING WIRES
+  - Wire 1 (→ CLAUDE.md): [WIRE1]
+  - Wire 2 (→ fix-bug):   [WIRE2]
+  - Wire 3 (knowledge):   [WIRE3]
+  - Wire 4 (outreach):    [WIRE4]
+
+  CONTROL
+  - CCBot:               [CCBOT]
+  - systemd service:     [SYSTEMD]
+  - Telegram token:      [TELEGRAM_TOKEN]
+  - Telegram topics:     [TELEGRAM_TOPICS]
+  - claude-mem:          [CLAUDE_MEM]
+
+  AUTONOMY
+  - Cron jobs:           [CRON_COUNT]
+  - Scheduled services:  [SCHEDULED_COUNT]
+  - Agent SDK:           [AGENT_SDK]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Important scoring notes from debug:**
+- If Mission Control NOT FOUND: check actual filename and path, do not penalise if file exists under different name
+- If wires NOT FOUND: ask user "I couldn't detect Wire 1 — does session-insights SKILL.md reference updating CLAUDE.md?" and adjust score based on answer
+- If projects < 3 but user has droplet: note "Projects on droplet not visible to local scan — ask user for count"
+- If Telegram topics = 0 but CCBot found: ask "How many Telegram topics do you have?" before scoring Control
+
+Never silently score 0 on something that might exist but wasn't detectable.
+Ask before penalising.
+
+---
+
 ## Step 1 — Scan the system
 
 Run all checks silently before producing any output. Collect raw counts and booleans.
@@ -115,37 +341,43 @@ Score 0–10 in half-steps. Not a strict ladder — each check adds weight.
 ### 4. Control
 *How freely can you direct it?*
 
+Score the **outcome** — can the user direct Claude from anywhere with Mac off?
+Not the specific tool (CCBot, n8n, custom webhook — all equivalent).
+
 | Check | Points |
 |---|---|
 | Claude Code installed and in use | +1.0 |
-| Remote Control configured | +0.5 |
-| claude-mem installed | +1.0 |
-| CCBot configured (~/.ccbot/.env exists) | +2.0 |
-| Telegram bot token set | +1.0 |
-| Server/droplet running (systemd service found) | +2.0 |
-| Multiple Telegram topics (2+) — parallel projects | +2.0 |
-| Mac-off verified: systemd + CCBot both live | +3.0 |
-| 3+ Telegram topics (full project coverage) | +1.5 |
-| Wispr Flow or voice input in use | +1.0 |
+| Remote Control configured | +1.0 |
+| claude-mem or equivalent memory tool installed | +1.0 |
+| Any Telegram bridge configured (.env with BOT_TOKEN) | +2.0 |
+| Server running any Claude bridge (systemd/tmux confirmed) | +2.0 |
+| Mac-off capability verified (bridge + server both live) | +3.0 |
+| 2+ project sessions remotely accessible | +2.0 |
+| 3+ project sessions (full project coverage) | +1.5 |
+| Voice input wired (Wispr Flow or similar) | +1.0 |
 
-**Why Telegram gets heavy weight:** CCBot + Telegram is a category change, not an incremental improvement.
-Remote Control = you approve gates, Mac must be open.
-Droplet alone = server exists, you still SSH in.
-CCBot + Telegram = Mac fully off, invoke from anywhere, parallel projects, Claude works while you sleep.
-This is the single most transformative infrastructure unlock in the system.
+**Why Mac-off gets +3.0:** This is a category change. Remote Control needs Mac open.
+A running server with Telegram bridge means Claude works while you sleep, from any
+device, for any project. Tool doesn't matter — CCBot, n8n, custom script all score equally.
+
+**CCBot multiplier:** if Telegram bridge + server + 3+ topics all confirmed →
+multiply Control dimension score × 1.2
 
 ### 5. Self-improving
 *Does it get smarter alone?*
 
+Score the **pattern**, not the specific skill name. External users won't have
+`session-insights` or `deploy-and-verify` — but may have equivalent wires.
+
 | Check | Points |
 |---|---|
-| /session-insights skill exists | +1.5 |
-| Wire 1: session-insights → CLAUDE.md (grep for it in SKILL.md) | +1.5 |
-| Wire 2: test fail → fix-bug (grep for it in deploy-and-verify) | +1.5 |
-| Wire 3: knowledge base auto-grows | +1.5 |
-| Wire 4: outreach learning | +1.0 |
-| failures/ exists with 3+ files | +1.0 |
-| claude-mem wired into session-insights | +1.0 |
+| Any skill that captures session learnings exists | +1.5 |
+| Wire 1 detected: any skill references updating CLAUDE.md | +1.5 |
+| Wire 2 detected: any skill handles test failures → auto-fix | +1.5 |
+| Wire 3 detected: knowledge/ memory/ or learnings/ folder with files | +1.5 |
+| Wire 4 detected: any skill learns from feedback or outreach | +1.0 |
+| failures/ or equivalent directory with 3+ files | +1.0 |
+| Memory tool (claude-mem or equivalent) wired in | +1.0 |
 | autoresearch planned or running | +1.0 |
 
 ### 6. Autonomy
