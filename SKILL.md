@@ -118,7 +118,7 @@ Score 0–10 in half-steps. Not a strict ladder — each check adds weight.
 | Check | Points |
 |---|---|
 | Claude Code installed and in use | +1.0 |
-| Remote Control configured | +1.0 |
+| Remote Control configured | +0.5 |
 | claude-mem installed | +1.0 |
 | CCBot configured (~/.ccbot/.env exists) | +2.0 |
 | Telegram bot token set | +1.0 |
