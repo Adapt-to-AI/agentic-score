@@ -2,7 +2,7 @@
 
 **How agentic are you?**
 
-One command. Scans your `~/.claude/` setup. Tells you your level, your Dragon Ball character, and whether you qualify for the Adapt to AI community.
+One command. Scans your `~/.claude/` setup. Tells you your level, your Dragon Ball character, and gives you direct recommendations on how to improve your Claude Code setup. Bonus point: you might get invited to the Adapt to AI community.
 
 ```
 /agentic-score
@@ -103,24 +103,24 @@ Every scan generates a unique ID — `SSJ-3247-A4` — saved to `~/.agentic-scor
 
 Generated from your actual `~/.claude/` setup. Cannot be faked. This is your proof-of-work.
 
-Share it when joining the Adapt to AI community.
+Take a screenshot and share it on your social media. You might also get asked to be part of the private WhatsApp community.
 
 ---
 
 ## The Community
 
-Built by **Giuseppe Belpiede** (exited his last company) and **Raffaello Starace** (raised VC from SoftBank, +$100M ARR company in LATAM).
+Built by **Giuseppe Belpiede** (exited his last company to Revelo, +$50M raised) and **Raffaello Starace** (raised VC from SoftBank, +$100M ARR company in LATAM).
 
-**Adapt to AI** is a WhatsApp-based global community where top founders and operators share learnings and help each other on their agentic journey — using Claude Code, Cursor, or OpenClaw.
+**Adapt to AI** is a WhatsApp-based global community where top founders and C-levels from high-growth companies share learnings and help each other on their agentic journey, using Claude Code (although we make exceptions for builders on Cursor/OpenClaw).
 
-The community includes founders currently in YC, YC alumni, and builders backed by SoftBank, Tiger Global, and other top VCs.
+The community includes founders who are currently in YC or alumni, that have raised from top VC funds (e.g. SoftBank, Tiger Global).
 
 **Level 8.0+ → Private group**
 Direct access. Everyone has a repo. No lurkers.
 → [Join private group](https://chat.whatsapp.com/JyJng7w0OxiK1MJN3jqdyh?mode=gi_t)
 
 **Below Level 8.0 → Open community**
-Free content, learnings, and discussions. Most content starts in the private group.
+Free content, learnings, and discussions. We share content from the private community to the public ones.
 → [Join open community](https://chat.whatsapp.com/Hwnh1V0YiOi5ORgDauhwyq)
 
 Your Agentic ID is your ticket in.

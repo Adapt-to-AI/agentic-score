@@ -722,17 +722,18 @@ Then print:
   "[CHARACTER LINE]"
 
   Adapt to AI is a WhatsApp-based global community where
-  top founders and operators share learnings and help each
-  other on their agentic journey — Claude Code, Cursor,
-  or OpenClaw.
+  top founders and C-levels from high-growth companies
+  share learnings and help each other on their agentic
+  journey, using Claude Code (although we make exceptions
+  for builders on Cursor/OpenClaw).
 
-  Built by Giuseppe Belpiede (exited his last company) and
-  Raffaello Starace (raised VC from SoftBank, +$100M ARR
-  company in LATAM) — two tech entrepreneurs who got tired
-  of building alone.
+  Built by Giuseppe Belpiede (exited his last company to
+  Revelo, +$50M raised) and Raffaello Starace (raised VC
+  from SoftBank, +$100M ARR company in LATAM).
 
-  The community includes YC founders, YC alumni, and
-  builders backed by top VCs.
+  The community includes founders who are currently in YC
+  or alumni, that have raised from top VC funds
+  (e.g. SoftBank, Tiger Global).
 
   IF level >= 8.0 (qualifies for private group):
 
@@ -748,8 +749,8 @@ Then print:
   IF level < 8.0 (open community):
 
     Join the open community — free content, learnings, and
-    discussions. Most content starts in the private group.
-    Reach Level 8.0 to qualify for private access.
+    discussions. We share content from the private community
+    to the public ones. Reach Level 8.0 to qualify.
     You are [X] levels away.
 
     ╔══════════════════════════════════════════════════╗
