@@ -141,8 +141,12 @@ Agentic Score =
 + (server running × 100)
 + (failures/ files × 10, max 50)
 + (scheduled tasks × 75)
++ (CCBot + Telegram topics × 75 each)
++ (3+ topics bonus × 100)
 + (Agent SDK live × 150)
 ```
+
+**Why CCBot scores heavily:** CCBot + Telegram is a category change — Mac fully off, invoke from anywhere, parallel projects, Claude works while you sleep. Remote Control requires your Mac open. CCBot doesn't.
 
 Max theoretical score: ~5,000
 

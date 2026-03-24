@@ -118,13 +118,21 @@ Score 0–10 in half-steps. Not a strict ladder — each check adds weight.
 | Check | Points |
 |---|---|
 | Claude Code installed and in use | +1.0 |
-| Remote Control configured | +1.5 |
+| Remote Control configured | +1.0 |
 | claude-mem installed | +1.0 |
 | CCBot configured (~/.ccbot/.env exists) | +2.0 |
 | Telegram bot token set | +1.0 |
 | Server/droplet running (systemd service found) | +2.0 |
-| Multiple Telegram topics (2+) | +0.5 |
+| Multiple Telegram topics (2+) — parallel projects | +2.0 |
+| Mac-off verified: systemd + CCBot both live | +3.0 |
+| 3+ Telegram topics (full project coverage) | +1.5 |
 | Wispr Flow or voice input in use | +1.0 |
+
+**Why Telegram gets heavy weight:** CCBot + Telegram is a category change, not an incremental improvement.
+Remote Control = you approve gates, Mac must be open.
+Droplet alone = server exists, you still SSH in.
+CCBot + Telegram = Mac fully off, invoke from anywhere, parallel projects, Claude works while you sleep.
+This is the single most transformative infrastructure unlock in the system.
 
 ### 5. Self-improving
 *Does it get smarter alone?*
@@ -171,6 +179,12 @@ Agentic Score =
 + (failures/ files × 10, max 50)
 + (scheduled tasks confirmed × 75)
 + (Agent SDK live × 150)
++ (CCBot + Telegram topics × 75 each)   ← Mac-off capability
++ (3+ Telegram topics bonus × 100)      ← parallel project control
+
+CCBot multiplier: if CCBot + systemd + 3+ topics all confirmed →
+  multiply Control dimension score × 1.2
+  (reflects category change, not just incremental improvement)
 ```
 
 ---
@@ -473,8 +487,8 @@ Then print:
   company in LATAM) — two tech entrepreneurs who got tired
   of building alone.
 
-  Top founders and C-levels who have scaled high-growth
-  companies globally — backed by SoftBank, Tiger Global, and YCombinator.
+  The community includes YC founders, YC alumni, and
+  builders backed by top VCs.
 
   IF level >= 8.0 (qualifies for private group):
 
