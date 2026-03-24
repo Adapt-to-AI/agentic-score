@@ -746,7 +746,7 @@ const nextChar=CHARACTERS.find(c=>c.rank===currentChar.rank+1);
 document.getElementById('ascii-art').textContent=ASCII[DATA.character]||ASCII.supersaiyan;
 document.getElementById('char-name').textContent=DATA.characterName;
 document.getElementById('char-tagline').textContent=DATA.tagline;
-document.getElementById('char-rank').innerHTML=`Power Level <span>${currentChar.rank}</span> of ${CHARACTERS.length}`;
+document.getElementById('char-rank').innerHTML=`Dragon Ball Character <span>${currentChar.rank}</span> of ${CHARACTERS.length}`;
 document.getElementById('level-num').textContent=DATA.level.toFixed(1);
 document.getElementById('level-fill').style.width=(DATA.level*10)+'%';
 document.getElementById('score-big').textContent=DATA.agenticScore.toLocaleString();
@@ -836,7 +836,7 @@ function renderCharacters(currentKey){
           ${isCurrent?'<div style="width:7px;height:7px;border-radius:50%;background:var(--accent);"></div>':'<div style="width:7px;height:7px;border-radius:50%;background:var(--border2);"></div>'}
           <div>
             <div style="font-size:15.4px;font-weight:bold;color:${c.color};font-family:var(--display);letter-spacing:2px;">${c.name.toUpperCase()}</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:2px;">Power Level ${c.rank} of 8 &nbsp;·&nbsp; Score ${c.scoreRange} &nbsp;·&nbsp; Level ${c.level}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">Dragon Ball Character ${c.rank} of 8 &nbsp;·&nbsp; Score ${c.scoreRange} &nbsp;·&nbsp; Level ${c.level}</div>
           </div>
         </div>
         ${isCurrent?'<div style="font-size:9.9px;letter-spacing:2px;color:#000;background:var(--accent);padding:3px 10px;border-radius:2px;">YOU ARE HERE</div>':''}
