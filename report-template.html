@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic Score Report</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+:root{
+  --bg:#0a0a0f;--bg2:#111118;--bg3:#1a1a24;--bg4:#0f0f16;
+  --border:#2a2a3a;--border2:#3a3a4a;
+  --accent:#f5a623;--accent2:#ff6b35;
+  --blue:#4a9eff;--green:#44ff88;--purple:#9b59ff;
+  --red:#ff4444;--teal:#2dd4bf;
+  --text:#e8e8f0;--muted:#6a6a8a;--muted2:#4a4a6a;
+  --mono:'Share Tech Mono',monospace;
+  --display:'Rajdhani',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;padding:32px 20px;}
+.container{max-width:900px;margin:0 auto;}
+
+.nav{display:flex;gap:0;margin-bottom:28px;border:1px solid var(--border);border-radius:3px;overflow:hidden;width:fit-content;}
+.nav-btn{padding:10px 24px;font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;background:transparent;color:var(--muted);border:none;cursor:pointer;transition:all 0.2s;}
+.nav-btn.active{background:var(--accent);color:#000;}
+.nav-btn:not(.active):hover{background:var(--bg3);color:var(--text);}
+
+.page{display:none;}
+.page.active{display:block;}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:3px;overflow:hidden;margin-bottom:14px;}
+.card-header{background:var(--bg3);border-bottom:1px solid var(--border);padding:11px 20px;display:flex;align-items:center;gap:10px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);}
+.card-label{font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
+
+/* CHARACTER */
+.char-grid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
+.ascii-panel{padding:24px 20px;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg4);}
+.ascii-art{font-size:10.5px;line-height:1.25;white-space:pre;color:var(--accent);font-family:var(--mono);margin-bottom:12px;}
+.char-name{font-family:var(--display);font-size:24px;font-weight:700;color:var(--accent);letter-spacing:4px;text-align:center;margin-bottom:4px;}
+.char-tagline{font-size:11px;color:var(--muted);text-align:center;font-style:italic;max-width:180px;line-height:1.5;}
+.char-rank{font-size:10px;color:var(--muted);letter-spacing:2px;text-align:center;margin-top:8px;padding:4px 12px;border:1px solid var(--border2);border-radius:2px;}
+.char-rank span{color:var(--accent);}
+
+.score-panel{padding:24px 20px;}
+.lbl{font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+.level-num{font-family:var(--display);font-size:56px;font-weight:700;color:var(--accent);line-height:1;}
+.level-denom{font-size:12px;color:var(--muted);}
+.level-track{height:3px;background:var(--bg3);border-radius:2px;margin-top:10px;overflow:hidden;}
+.level-fill{height:100%;background:var(--accent);border-radius:2px;}
+.divider{margin:18px 0;height:1px;background:var(--border);}
+.score-big{font-family:var(--display);font-size:34px;font-weight:700;color:var(--green);}
+.score-unit{font-size:11px;color:var(--muted);margin-left:5px;}
+
+/* DIMS */
+.dims-body{padding:18px 20px;}
+.dim-row{display:grid;grid-template-columns:170px 1fr 38px;align-items:center;gap:12px;margin-bottom:11px;}
+.dim-lbl{font-size:12px;color:var(--text);}
+.bar-track{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;}
+.b-skills{background:var(--accent);}
+.b-hooks{background:var(--blue);}
+.b-multi{background:var(--purple);}
+.b-control{background:var(--green);}
+.b-self{background:var(--accent2);}
+.b-autonomy{background:var(--red);}
+.dim-score{font-size:12px;color:var(--text);text-align:right;}
+
+/* NEXT LEVEL BLOCK */
+.next-level-block{padding:18px 20px;border-top:1px solid var(--border);background:var(--bg4);}
+.next-level-title{font-size:10px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:14px;}
+.next-level-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;}
+.next-level-icon{font-size:11px;color:var(--red);min-width:14px;margin-top:1px;}
+.next-level-text{font-size:12px;color:var(--text);line-height:1.6;}
+.next-level-text .dim-tag{font-size:10px;padding:1px 6px;border-radius:2px;margin-right:5px;font-family:var(--mono);}
+.tag-skills{background:#2a1f00;color:var(--accent);}
+.tag-hooks{background:#001a2a;color:var(--blue);}
+.tag-multi{background:#1a0030;color:var(--purple);}
+.tag-control{background:#002a14;color:var(--green);}
+.tag-self{background:#2a1000;color:var(--accent2);}
+.tag-autonomy{background:#2a0000;color:var(--red);}
+
+/* RADAR */
+.radar-row{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:center;padding:18px 20px;border-bottom:1px solid var(--border);}
+.insight-stack{display:flex;flex-direction:column;gap:10px;}
+.insight{padding:11px 14px;border:1px solid var(--border);border-radius:3px;background:var(--bg3);}
+.insight-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;}
+.lbl-green{color:var(--green);}
+.lbl-red{color:var(--red);}
+.lbl-amber{color:var(--accent);}
+.insight-val{font-size:13px;color:var(--text);margin-bottom:2px;}
+.insight-sub{font-size:11px;color:var(--muted);line-height:1.5;}
+
+/* MOVES */
+.moves-body{padding:18px 20px;}
+.move-row{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;}
+.move-n{font-family:var(--display);font-size:18px;font-weight:700;color:var(--accent);min-width:22px;line-height:1;margin-top:3px;}
+.move-text{font-size:12px;color:var(--text);line-height:1.6;}
+.move-cmd{display:inline-block;background:var(--bg3);border:1px solid var(--border);padding:2px 8px;border-radius:2px;font-size:10px;color:var(--accent);margin-top:3px;}
+
+/* BREAKDOWN */
+.dim-card{background:var(--bg2);border:1px solid var(--border);border-radius:3px;margin-bottom:12px;overflow:hidden;}
+.dim-card-header{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;background:var(--bg3);border-bottom:1px solid var(--border);}
+.dim-card-name{font-size:13px;color:var(--text);font-weight:bold;}
+.dim-card-score{font-family:var(--display);font-size:22px;font-weight:700;}
+.dim-card-body{padding:14px 20px;}
+.check-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--muted2);}
+.check-row:last-child{border-bottom:none;}
+.check-icon{font-size:12px;min-width:14px;margin-top:1px;}
+.check-pass{color:var(--green);}
+.check-fail{color:var(--red);}
+.check-content{flex:1;}
+.check-title{font-size:12px;color:var(--text);margin-bottom:2px;}
+.check-why{font-size:11px;color:var(--muted);line-height:1.5;}
+.check-fix{font-size:10px;color:var(--accent);margin-top:3px;font-style:italic;}
+
+/* GLOSSARY */
+.glossary-intro{padding:18px 20px;font-size:12px;color:var(--muted);line-height:1.7;border-bottom:1px solid var(--border);}
+.glossary-section{border:1px solid var(--border);border-radius:3px;margin-bottom:12px;overflow:hidden;}
+.glossary-header{background:var(--bg3);padding:13px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.glossary-dim-name{font-size:13px;font-weight:bold;color:var(--text);}
+.glossary-question{font-size:11px;color:var(--muted);font-style:italic;}
+.glossary-body{padding:16px 20px;}
+.glossary-def{margin-bottom:16px;}
+.glossary-def:last-child{margin-bottom:0;}
+.glossary-term{font-size:11px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.glossary-desc{font-size:12px;color:var(--text);line-height:1.7;}
+.glossary-example{font-size:11px;color:var(--muted);margin-top:4px;padding-left:12px;border-left:2px solid var(--border2);line-height:1.6;}
+.glossary-levels{margin-top:10px;display:flex;flex-direction:column;gap:4px;}
+.glossary-level-row{display:grid;grid-template-columns:40px 1fr;gap:10px;font-size:11px;}
+.gl-score{color:var(--accent);}
+.gl-desc{color:var(--muted);}
+
+.footer{text-align:center;padding:16px;font-size:10px;color:var(--muted);letter-spacing:2px;}
+.footer a{color:var(--accent);text-decoration:none;}
+
+@media(max-width:600px){
+  .char-grid,.radar-row{grid-template-columns:1fr;}
+  .ascii-panel{border-right:none;border-bottom:1px solid var(--border);}
+  .dim-row{grid-template-columns:120px 1fr 32px;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPage('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showPage('breakdown',this)">Breakdown</button>
+  <button class="nav-btn" onclick="showPage('characters',this)">Characters</button>
+  <button class="nav-btn" onclick="showPage('glossary',this)">Glossary</button>
+</div>
+
+<!-- PAGE 1 -->
+<div id="page-overview" class="page active">
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><div class="card-label">Character Profile</div><div style="margin-left:auto;font-size:9px;letter-spacing:2px;color:var(--muted)">by adaptto.ai</div><div style="margin-left:auto;font-size:10px;color:var(--muted)" id="scan-date"></div></div>
+    <div class="char-grid">
+      <div class="ascii-panel">
+        <pre class="ascii-art" id="ascii-art"></pre>
+        <div class="char-name" id="char-name"></div>
+        <div class="char-tagline" id="char-tagline"></div>
+        <div class="char-rank" id="char-rank"></div>
+      </div>
+      <div class="score-panel">
+        <div class="lbl">Overall Level</div>
+        <div class="level-num" id="level-num"></div>
+        <div class="level-denom">/ 10.0</div>
+        <div class="level-track"><div class="level-fill" id="level-fill"></div></div>
+        <div class="divider"></div>
+        <div class="lbl">Agentic Score <span style="color:var(--muted2);font-size:9px;margin-left:6px">max ~5,000</span></div>
+        <span class="score-big" id="score-big"></span><span class="score-unit">pts</span>
+      </div>
+    </div>
+
+    <div class="card-header" style="border-top:1px solid var(--border);"><div class="dot"></div><div class="card-label">Six Dimensions</div></div>
+    <div class="dims-body" id="dims-body"></div>
+    <div class="next-level-block">
+      <div class="next-level-title" id="next-level-title"></div>
+      <div id="next-level-items"></div>
+    </div>
+
+    <div class="radar-row">
+      <svg viewBox="0 0 260 260" id="radar-svg" style="width:100%;height:auto;"></svg>
+      <div class="insight-stack" id="insight-stack"></div>
+    </div>
+
+    <div class="card-header" style="border-top:1px solid var(--border);"><div class="dot"></div><div class="card-label">Top 3 Moves</div></div>
+    <div class="moves-body" id="moves-body"></div>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div id="page-breakdown" class="page">
+  <div id="breakdown-body"></div>
+</div>
+
+<!-- PAGE 3: CHARACTERS -->
+<div id="page-characters" class="page">
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><div class="card-label">The Eight Characters</div><div style="margin-left:auto;font-size:9px;letter-spacing:2px;color:var(--muted)">weakest → strongest</div></div>
+    <div style="padding:16px 20px;font-size:11px;color:var(--muted);line-height:1.7;border-bottom:1px solid var(--border)">Each character represents a stage of agentic evolution. You cannot skip stages entirely — the skills, hooks, and infrastructure build on each other. Your character is determined by your Agentic Score and overall level.</div>
+  </div>
+  <div id="characters-body"></div>
+</div>
+
+<!-- PAGE 4: GLOSSARY -->
+<div id="page-glossary" class="page">
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><div class="card-label">What Each Dimension Means</div></div>
+    <div class="glossary-intro">The Agentic Score measures six independent dimensions of your Claude Code system. Understanding each one helps you know exactly what to build next — and why it matters.</div>
+  </div>
+  <div id="glossary-body"></div>
+</div>
+
+<div class="footer">AGENTIC SCORE &nbsp;·&nbsp; by <a href="https://adaptto.ai">adaptto.ai</a> &nbsp;·&nbsp; <a href="https://github.com/giuseppebelpiede/agentic-score">github.com/giuseppebelpiede/agentic-score</a></div>
+</div>
+
+<script>
+function showPage(p,btn){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  btn.classList.add('active');
+}
+
+const ASCII={
+  krillin:`  .-"""-.
+ /  o o  \\
+|    ▽    |
+ \\  ___  /
+  '-----'
+  |     |
+  |_____|
+ /|     |\\
+/ |_____| \\
+  | | | |
+"Still training..."`,
+  yamcha:`  .-"""-.
+ / ^   ^ \\
+|   -●-   |
+ \\ \\___/ /
+  '-----'
+  |  ✦  |
+  |_____|
+  /|   |\\
+ / |___| \\
+"Getting there..."`,
+  tien:`◉ .-"""-.  3rd eye
+ /  ■   ■  \\
+|    ___    |
+ \\  (   )  /
+  '-------'
+  | POWER |
+  |  BEAM |
+  |_______|
+"Discipline wins."`,
+  piccolo:`  .-""""-.
+ / ◢▓▓▓◣ \\
+|  PICCOLO |
+ \\ ◥▓▓▓◤ /
+  '------'
+  ☯ NAMEK ☯
+  |      |
+  |______|
+"The system trains."`,
+  vegeta:`  /\\  VEGETA  /\\
+ /▓▓\\  ◣◢  /▓▓\\
+ ||||  ◢◣  ||||
+  \\‾‾‾‾‾‾‾‾‾/
+   |███████|
+   |_______|
+  /         \\
+ /___________\\
+"I work alone."`,
+  goku:`  ∧∧ .------. ∧∧
+ (  )| GOKU |( )
+  \\/  '----'  \\/
+   |~~~~~~~~~~|
+   |██████████|
+  /|          |\\
+ / |__________| \\
+"Everything connects."`,
+  supersaiyan:`⚡⚡⚡⚡⚡⚡⚡⚡⚡
+║  SUPER SAIYAN  ║
+║ ░▒▓██████▓▒░  ║
+║   POWER: MAX   ║
+⚡⚡⚡⚡⚡⚡⚡⚡⚡
+  ║ ║ ║ ║ ║ ║
+  ╚═╩═╩═╩═╩═╝
+"Transformed. No effort."`,
+  ultrainstinct:`∿∿∿∿∿∿∿∿∿∿∿∿∿
+✦  ULTRA  ✦
+✦ INSTINCT ✦
+· SILVER  AURA ·
+·  ·  ·  ·  ·  ·
+∿∿∿∿∿∿∿∿∿∿∿∿∿
+≋ NO THOUGHT ≋
+∿∿∿∿∿∿∿∿∿∿∿∿∿
+"System just moves."`
+};
+
+const CHARACTERS=[
+  {key:'krillin',     name:'Krillin',       min:0,    max:500,  rank:1},
+  {key:'yamcha',      name:'Yamcha',         min:500,  max:1000, rank:2},
+  {key:'tien',        name:'Tien',           min:1000, max:1500, rank:3},
+  {key:'piccolo',     name:'Piccolo',        min:1500, max:2000, rank:4},
+  {key:'vegeta',      name:'Vegeta',         min:2000, max:2500, rank:5},
+  {key:'goku',        name:'Goku',           min:2500, max:3000, rank:6},
+  {key:'supersaiyan', name:'Super Saiyan',   min:3000, max:3500, rank:7},
+  {key:'ultrainstinct',name:'Ultra Instinct',min:3500, max:99999,rank:8},
+];
+
+const DIM_META=[
+  {key:'skills', label:'Skills & Memory', color:'var(--accent)', cls:'b-skills', tag:'tag-skills'},
+  {key:'hooks',  label:'Hooks & Gates',   color:'var(--blue)',   cls:'b-hooks',  tag:'tag-hooks'},
+  {key:'multi',  label:'Multi-project',   color:'var(--purple)', cls:'b-multi',  tag:'tag-multi'},
+  {key:'control',label:'Control',         color:'var(--green)',  cls:'b-control',tag:'tag-control'},
+  {key:'self',   label:'Self-improving',  color:'var(--accent2)',cls:'b-self',   tag:'tag-self'},
+  {key:'autonomy',label:'Autonomy',       color:'var(--red)',    cls:'b-autonomy',tag:'tag-autonomy'},
+];
+
+// What's needed to reach next character — mapped by current rank
+const NEXT_LEVEL_REQUIREMENTS={
+  1:[ // Krillin → Yamcha
+    {dim:'skills',  text:'Write your first 5 skills with YAML frontmatter'},
+    {dim:'skills',  text:'Add real rules to CLAUDE.md (not just boilerplate)'},
+    {dim:'hooks',   text:'Add at least 1 hook in settings.json'},
+  ],
+  2:[ // Yamcha → Tien
+    {dim:'skills',  text:'Reach 30+ skills across your projects'},
+    {dim:'hooks',   text:'Add 4+ hooks covering session lifecycle'},
+    {dim:'multi',   text:'Set up project-level CLAUDE.md files'},
+  ],
+  3:[ // Tien → Piccolo
+    {dim:'skills',  text:'Add quality gates inside your main build skill'},
+    {dim:'multi',   text:'Build Mission Control — single file for all projects'},
+    {dim:'self',    text:'Build /session-insights and run it after every session'},
+  ],
+  4:[ // Piccolo → Vegeta
+    {dim:'control', text:'Set up Remote Control to direct Claude from your phone'},
+    {dim:'self',    text:'Wire session-insights to auto-update CLAUDE.md (Wire 1)'},
+    {dim:'hooks',   text:'Add PrePush blocker and PostEdit linting hooks'},
+  ],
+  5:[ // Vegeta → Goku
+    {dim:'multi',   text:'Build /status skill that auto-runs at session start'},
+    {dim:'self',    text:'Wire all 4 self-improving wires and verify they fire'},
+    {dim:'control', text:'Provision a server droplet for always-on access'},
+  ],
+  6:[ // Goku → Super Saiyan
+    {dim:'control', text:'Install CCBot + Telegram so Mac can stay closed'},
+    {dim:'autonomy',text:'Add /daily-metrics cron job — know your numbers daily'},
+    {dim:'autonomy',text:'Verify Desktop Scheduled Tasks are actively running'},
+  ],
+  7:[ // Super Saiyan → Ultra Instinct
+    {dim:'autonomy',text:'Deploy Agent SDK on server — skills run unattended'},
+    {dim:'self',    text:'Wire autoresearch to improve your weakest skill overnight'},
+    {dim:'autonomy',text:'Build phone approval gateway — you approve, never trigger'},
+  ],
+  8:[] // Ultra Instinct — nothing higher
+};
+
+const MOVE_LIBRARY=[
+  {dim:'skills', minScore:0, maxScore:3,  text:'Write your first CLAUDE.md with 5 real rules',                cmd:'touch ~/.claude/CLAUDE.md — add SKILL-FIRST, NEXT-STEP, SESSION GOAL rules'},
+  {dim:'skills', minScore:0, maxScore:5,  text:'Build your first reusable SKILL.md',                          cmd:'mkdir ~/.claude/skills/my-first-skill && write SKILL.md'},
+  {dim:'skills', minScore:3, maxScore:7,  text:'Add YAML frontmatter to all existing skills',                 cmd:'grep -rL "^---" ~/.claude/skills/*/SKILL.md — add name+description to each'},
+  {dim:'skills', minScore:0, maxScore:8,  text:'Create failures/ directory and log your first failure',       cmd:'mkdir -p ~/.claude/knowledge/failures && write your last bug as a .md file'},
+  {dim:'skills', minScore:5, maxScore:9,  text:'Add ISC rule — define done before every build',               cmd:'Add to CLAUDE.md: "Before any build, define 3 verifiable success criteria"'},
+  {dim:'hooks',  minScore:0, maxScore:4,  text:'Add a SessionStart hook that verifies critical rules exist',  cmd:'Edit ~/.claude/settings.json → hooks → SessionStart → grep for top rules'},
+  {dim:'hooks',  minScore:0, maxScore:5,  text:'Add a PrePush hook to block broken deploys',                  cmd:'Add to settings.json: hooks.PrePush → run npm test before every push'},
+  {dim:'hooks',  minScore:2, maxScore:7,  text:'Add Design Preview Enforcement rule to CLAUDE.md',            cmd:'Add: "Show ASCII wireframe before any UI build — no exceptions"'},
+  {dim:'hooks',  minScore:4, maxScore:8,  text:'Add self-review gate to your main build skill',               cmd:'Add final step to /build-feature SKILL.md: self-review against requirements'},
+  {dim:'multi',  minScore:0, maxScore:5,  text:'Create a PRODUCT_STATE.md for each active project',           cmd:'touch ~/projects/[name]/PRODUCT_STATE.md — status, next action, last deploy'},
+  {dim:'multi',  minScore:3, maxScore:7,  text:'Build a Mission Control file at ~/.claude/MISSION_CONTROL.md',cmd:'One-line status per project + next action — read at every session start'},
+  {dim:'multi',  minScore:5, maxScore:9,  text:'Build a /status skill that auto-briefs you in 10 seconds',   cmd:'mkdir ~/.claude/skills/status — reads all PRODUCT_STATE.md files'},
+  {dim:'control',minScore:0, maxScore:4,  text:'Install claude-mem for persistent memory across sessions',    cmd:'pip install claude-mem — stores decisions and fixes automatically'},
+  {dim:'control',minScore:2, maxScore:6,  text:'Enable Remote Control in Claude Code settings',               cmd:'Claude Code settings → Remote Control → enable → save link on phone'},
+  {dim:'control',minScore:4, maxScore:7,  text:'Provision a DigitalOcean droplet for always-on access',      cmd:'digitalocean.com → Create Droplet → Ubuntu 24.04 → $6/mo → SSH key'},
+  {dim:'control',minScore:6, maxScore:9,  text:'Install CCBot + Telegram to control Claude from phone',      cmd:'pip install uv && uv tool install git+https://github.com/six-ddc/ccmux.git'},
+  {dim:'self',   minScore:0, maxScore:4,  text:'Build a /session-insights skill to capture learnings',       cmd:'mkdir ~/.claude/skills/session-insights — summarise + propose CLAUDE.md update'},
+  {dim:'self',   minScore:2, maxScore:6,  text:'Wire session-insights to auto-update CLAUDE.md',             cmd:'Add to /session-insights Step 3: propose CLAUDE.md diff for approval'},
+  {dim:'self',   minScore:4, maxScore:7,  text:'Wire test failures to auto-suggest /fix-bug',                cmd:'Add to /deploy-and-verify: on test fail → run /fix-bug automatically'},
+  {dim:'self',   minScore:6, maxScore:9,  text:'Wire autoresearch to improve your weakest skill overnight',  cmd:'git clone github.com/karpathy/autoresearch → pilot on /outreach skill'},
+  {dim:'autonomy',minScore:0, maxScore:4, text:'Add a /daily-metrics cron — know your numbers every morning',cmd:'crontab -e → 0 9 * * * → run /daily-metrics and save to ~/metrics.log'},
+  {dim:'autonomy',minScore:2, maxScore:6, text:'Verify Desktop Scheduled Tasks are active in Claude Code',   cmd:'Claude Code Desktop → Schedule → confirm all recurring tasks running'},
+  {dim:'autonomy',minScore:4, maxScore:8, text:'Schedule /session-insights to run every Sunday automatically',cmd:'Claude Code Desktop → Schedule → every Sunday 8pm → /session-insights'},
+  {dim:'autonomy',minScore:6, maxScore:9, text:'Deploy Agent SDK on droplet — Claude runs skills unattended',cmd:'npm install @anthropic-ai/agent-sdk → wire into droplet cron'},
+];
+
+function generateMoves(scores){
+  const dimKeys=['skills','hooks','multi','control','self','autonomy'];
+  const scoreMap={};
+  dimKeys.forEach((k,i)=>scoreMap[k]=scores[i]);
+  const candidates=MOVE_LIBRARY.filter(m=>scoreMap[m.dim]>=m.minScore&&scoreMap[m.dim]<m.maxScore);
+  const seen=new Set();
+  const result=[];
+  for(const c of candidates){
+    if(result.length>=3) break;
+    if(!seen.has(c.dim)){seen.add(c.dim);result.push(c);}
+  }
+  for(const c of candidates){
+    if(result.length>=3) break;
+    if(!result.includes(c)) result.push(c);
+  }
+  return result.slice(0,3);
+}
+
+const BREAKDOWN_CHECKS={
+  skills:{
+    label:'Skills & Memory',color:'var(--accent)',
+    checks:[
+      {title:'CLAUDE.md exists with real rules',                why:'Without rules Claude starts from scratch every session. Behavior resets.'},
+      {title:'10+ skills in ~/.claude/skills/',                 why:'Skills encode your methodology. Below 10 you are still improvising.'},
+      {title:'30+ skills with YAML frontmatter',               why:'Frontmatter lets Claude auto-trigger skills. Without it you invoke manually.'},
+      {title:'75+ skills across all projects',                  why:'At 75+ your system has more methodology than most teams.'},
+      {title:'Gates inside skills (design preview, ISC)',       why:'Gates enforce quality before shipping. No gates means no checkpoints.'},
+      {title:'tasks/lessons.md with 30+ lessons',              why:'Lessons are compressed failures. 30+ means the system has truly learned.'},
+      {title:'~/.claude/knowledge/ directory exists',          why:'Persistent knowledge survives session compaction and model updates.'},
+      {title:'failures/ directory with documented failures',   why:'Documented failures prevent repeating the same mistake.'},
+      {title:'ISC rule in CLAUDE.md',                          why:'ISC makes done measurable before you start building, not after.'},
+    ]
+  },
+  hooks:{
+    label:'Hooks & Gates',color:'var(--blue)',
+    checks:[
+      {title:'At least 1 hook in settings.json',               why:'Hooks automate enforcement. Without them rules are just wishes.'},
+      {title:'4+ hooks covering key lifecycle events',         why:'4 hooks means SessionStart, SessionEnd, PostEdit, and PrePush covered.'},
+      {title:'7+ hooks for full lifecycle coverage',           why:'7+ hooks means nearly every action triggers an automatic check.'},
+      {title:'SessionStart + SessionEnd both covered',         why:'Lifecycle hooks ensure context loads and insights save automatically.'},
+      {title:'PrePush blocker hook present',                   why:'Blocks broken code from reaching production. One hook that saves hours.'},
+      {title:'PostEdit tsc/lint hook present',                 why:'Catches errors the moment a file is saved, not at deploy time.'},
+      {title:'Self-review gate in main build skill',           why:'Forces Claude to critique its output before presenting it to you.'},
+      {title:'Design Preview Enforcement in CLAUDE.md',        why:'No UI ships without visual review. Prevents rework from misaligned designs.'},
+      {title:'Rule verification greps in SessionStart',        why:'Detects if a linter silently deleted your critical rules.'},
+    ]
+  },
+  multi:{
+    label:'Multi-project',color:'var(--purple)',
+    checks:[
+      {title:'2+ projects with own CLAUDE.md',                 why:'Project-level CLAUDE.md means context is project-specific, not generic.'},
+      {title:'5+ active projects managed',                     why:'5+ projects means the system is doing real orchestration.'},
+      {title:'MISSION_CONTROL.md exists',                      why:'See all projects at a glance. No context-rebuilding needed.'},
+      {title:'/status skill that auto-runs at session start',  why:'Know where every project stands in 10 seconds, not 10 minutes.'},
+      {title:'PRODUCT_STATE.md per project',                   why:'Persistent state survives compaction, restarts, and partner handoffs.'},
+      {title:'product-catalog.json cross-project registry',   why:'Proposals auto-pull correct product data. Never manually synced.'},
+      {title:'/drift-check skill for staleness detection',    why:'Flags when documents diverge from code. Source of truth stays single.'},
+      {title:'Cross-project scanning in any skill',            why:'Skills that read all projects spot conflicts you would otherwise miss.'},
+    ]
+  },
+  control:{
+    label:'Control',color:'var(--green)',
+    checks:[
+      {title:'Claude Code installed and actively used',        why:'The foundation. Without Claude Code there is no agentic system.'},
+      {title:'Remote Control configured',                      why:'Control Claude from your phone while away from desk.'},
+      {title:'claude-mem installed',                           why:'Persistent memory across sessions. Decisions do not need re-explaining.'},
+      {title:'CCBot configured on server',                     why:'Telegram sends tasks directly to Claude. Mac can stay closed.'},
+      {title:'Telegram bot token active',                      why:'Live connection between your phone and the server.'},
+      {title:'Server running 24/7 (systemd service found)',   why:'Your system operates independently of your laptop.'},
+      {title:'Multiple Telegram topics (2+)',                  why:'Each topic is a project. Switch projects by switching chat topics.'},
+      {title:'Voice input wired (Wispr Flow or similar)',     why:'Dictate tasks while walking. Zero-friction control from anywhere.'},
+    ]
+  },
+  self:{
+    label:'Self-improving',color:'var(--accent2)',
+    checks:[
+      {title:'/session-insights skill exists',                 why:'Without this learnings from every session evaporate.'},
+      {title:'Wire 1: session-insights updates CLAUDE.md',    why:'Every session makes the system smarter. Rules improve automatically.'},
+      {title:'Wire 2: test fail auto-triggers /fix-bug',      why:'Failures route to fixes without you choosing to act on them.'},
+      {title:'Wire 3: knowledge base auto-grows',             why:'Decisions and patterns accumulate without manual capture.'},
+      {title:'Wire 4: outreach learning feeds back',          why:'What works in outreach improves future outreach automatically.'},
+      {title:'failures/ has 3+ documented failures',          why:'3+ failures means bad patterns are documented and searchable.'},
+      {title:'claude-mem wired into session-insights',        why:'Memory layer and insights layer working together. Nothing is lost.'},
+      {title:'autoresearch planned or running',               why:'Skills improve overnight while you sleep. Compounding gains.'},
+    ]
+  },
+  autonomy:{
+    label:'Autonomy',color:'var(--red)',
+    checks:[
+      {title:'At least one cron job running',                  why:'Something runs without you asking. First step to true autonomy.'},
+      {title:'/daily-metrics runs on schedule',               why:'You know your numbers every morning without opening a terminal.'},
+      {title:'Desktop Scheduled Tasks confirmed active',       why:'Claude runs reviews and checks on a schedule, not on request.'},
+      {title:'/product-ux-review scheduled weekly',           why:'UX degradation caught automatically before users notice.'},
+      {title:'/session-insights scheduled weekly',            why:'Learnings captured even if you forget to run it manually.'},
+      {title:'Trigger.dev handling product automation',       why:'Product-level automation runs in the cloud, not your laptop.'},
+      {title:'Agent SDK configured on server',               why:'Claude executes full skill chains unattended. You approve results.'},
+      {title:'Post-deploy monitoring looping',                why:'Deploys verify themselves. You get notified, not asked to check.'},
+    ]
+  }
+};
+
+const QUICK_FIXES={
+  skills:['touch ~/.claude/CLAUDE.md — add 5 rules today','mkdir -p ~/.claude/skills/my-skill && write SKILL.md','Add --- frontmatter to each SKILL.md: name, description, triggers','mkdir ~/.claude/knowledge/failures — log first failure now','Add gates using ⛔ markers to your main build skill','Create tasks/lessons.md — write 3 most recent learnings','mkdir ~/.claude/knowledge — start architecture-decisions.md','mkdir ~/.claude/knowledge/failures — document last bug','Add to CLAUDE.md: ISC RULE — 3 success criteria before any build'],
+  hooks:['Edit settings.json → add first hooks.SessionStart entry','Add PrePush + PostEdit hooks to settings.json','Add 3 more hooks for full lifecycle coverage','Add SessionEnd hook to save session summary automatically','Add PrePush hook: npm test before every git push','Add PostEdit hook: tsc on every TypeScript file save','Add self-review step to /build-feature as final gate','Add DESIGN PREVIEW ENFORCEMENT to CLAUDE.md','Add rule grep to SessionStart hook'],
+  multi:['Create CLAUDE.md in each active project root','Add project CLAUDE.md files for all active projects','touch ~/.claude/MISSION_CONTROL.md — one line per project','Build /status skill that reads all PRODUCT_STATE.md files','Create PRODUCT_STATE.md in each project root','Create ~/.claude/product-catalog.json with all product data','Build /drift-check skill to flag stale documents','Add cross-project scan step to /evaluate-opportunity'],
+  control:['Install Claude Code: npm install -g @anthropic-ai/claude-code','Enable Remote Control in Claude Code → Settings','pip install claude-mem — persistent cross-session memory','Install CCBot: uv tool install git+github.com/six-ddc/ccmux.git','Add bot token to ~/.ccbot/.env','Provision DigitalOcean droplet ($6/mo) + systemd service','Create Telegram topics matching project folder names','Install Wispr Flow for voice-to-Telegram control'],
+  self:['Build /session-insights skill in ~/.claude/skills/','Add Wire 1 to session-insights: propose CLAUDE.md diff','Add to deploy-and-verify: on test fail → /fix-bug','Add Wire 3: session-insights saves to knowledge/decisions.md','Add Wire 4: outreach corrections update style-rules.md','Write 3 failure files in ~/.claude/knowledge/failures/','Wire claude-mem into session-insights Step 1','Clone github.com/karpathy/autoresearch — pilot on one skill'],
+  autonomy:['crontab -e → 0 9 * * * — run /daily-metrics every morning','Claude Code Desktop → Schedule → verify tasks running','Open Desktop → Schedule → add 3 recurring tasks now','Add weekly /product-ux-review to scheduled tasks','Add /session-insights to Sunday scheduled tasks','Evaluate Trigger.dev for product automation hooks','Install Agent SDK on droplet for unattended execution','Add post-deploy monitoring loop to deploy-and-verify'],
+};
+
+const GLOSSARY=[
+  {
+    key:'skills',label:'Skills & Memory',question:'How smart is the system?',
+    color:'var(--accent)',
+    terms:[
+      {term:'Skills',desc:'Reusable SKILL.md files that encode a specific workflow — how to build a feature, how to review a product, how to run outreach. Each skill is a methodology your system can invoke. Without skills, Claude improvises every time.',example:'Example: your /build-feature skill has 9 steps, a design preview gate, and an ISC check. Without it, Claude would guess the process.'},
+      {term:'Memory',desc:'Everything Claude needs to know that persists beyond a single session — CLAUDE.md rules, architecture decisions, lessons from past failures, known patterns. Memory is what separates a system that learns from one that forgets.',example:'Example: your failures/ directory means the fit_count bug pattern is documented. Future sessions check it before touching business logic.'},
+      {term:'Gates',desc:'Checkpoints inside a skill that must pass before continuing. Design Preview gate stops the build until you approve the wireframe. ISC gate stops the build until success criteria are defined. Gates make quality automatic.',example:'Example: DESIGN PREVIEW ENFORCEMENT means no UI ships without a visual review — even if you forget to ask.'},
+      {term:'Rules',desc:'Behavioral instructions in CLAUDE.md that Claude follows in every session. NEXT-STEP RULE means every terminal action ends with a suggested next step. SKILL-FIRST RULE means Claude routes requests to skills before writing raw instructions.',example:'Example: without COPY CONSISTENCY CHECK rule, an advisor name correction in one document would not propagate to all others automatically.'},
+    ],
+    levels:[
+      {score:'1.0–3.0', desc:'CLAUDE.md exists, a few basic skills. Claude still improvises most of the time.'},
+      {score:'4.0–6.0', desc:'30+ skills with frontmatter, quality gates, lessons accumulating.'},
+      {score:'7.0–8.5', desc:'75+ skills, failures/ growing, ISC enforced, knowledge base active.'},
+      {score:'9.0–10.0',desc:'100+ skills, self-improving, autoresearch running, skills improve themselves.'},
+    ]
+  },
+  {
+    key:'hooks',label:'Hooks & Gates',question:'How enforced are the rules?',
+    color:'var(--blue)',
+    terms:[
+      {term:'Hooks',desc:'Automated triggers that fire when something happens — when a session starts, when a file is edited, when you try to push code. Hooks enforce rules without you remembering to enforce them. The rule lives in the hook, not in your head.',example:'Example: PrePush hook runs npm test before every git push. You cannot push broken code even if you forget to test.'},
+      {term:'SessionStart hook',desc:'Fires when a Claude Code session opens. Used to: verify critical rules are still in CLAUDE.md, load context, brief you on project status. Without it, every session starts cold.',example:'Example: your SessionStart hook greps for SESSION GOAL RULE. If a linter deleted it, you get a warning before wasting an hour on a directionless session.'},
+      {term:'PrePush hook',desc:'Fires before git push. Used to: run tests, check for secrets, verify types compile. One of the highest-value hooks — prevents broken code from reaching production.',example:'Example: PrePush hook runs tsc + vitest. A pushed commit with a type error gets blocked before it can break staging.'},
+      {term:'Self-review gate',desc:'A step inside a skill where Claude checks its own output before presenting it. Not a hook — lives inside the skill itself. Catches the most common failure: Claude reporting done when something is actually wrong.',example:'Example: /build-feature self-review gate checks: does this match the ISC criteria? Are tests passing? Is the design consistent with DESIGN.md?'},
+    ],
+    levels:[
+      {score:'1.0–2.5', desc:'No hooks. Rules exist only in CLAUDE.md. Enforcement is manual.'},
+      {score:'3.0–5.0', desc:'1–4 hooks. Session lifecycle partially covered. Some automation.'},
+      {score:'6.0–7.5', desc:'5–7 hooks. PrePush, PostEdit, SessionStart, SessionEnd all covered.'},
+      {score:'8.0–10.0',desc:'7+ hooks, self-review gates in skills, rule verification automatic.'},
+    ]
+  },
+  {
+    key:'multi',label:'Multi-project',question:'How much context survives?',
+    color:'var(--purple)',
+    terms:[
+      {term:'Context survival',desc:'When you open a session, how much does Claude already know? With zero context survival, you spend 10 minutes re-explaining what project you are on, what the stack is, and what you were doing last time. With full context survival, Claude knows in 10 seconds.',example:'Example: /status auto-runs at session start and reads PRODUCT_STATE.md for all 7 projects. You see Sophie status, AdapttoAI status, and pending actions — instantly.'},
+      {term:'Project hierarchy',desc:'Each project has its own CLAUDE.md with project-specific rules, alongside a global ~/.claude/CLAUDE.md with rules that apply everywhere. The hierarchy means Sophie has different conventions than AdapttoAI without either overriding global rules.',example:'Example: Sophie CLAUDE.md says "always use Portuguese for candidate-facing copy." AdapttoAI CLAUDE.md says "bilingual — always generate EN and ES." Global CLAUDE.md says "SKILL-FIRST RULE" for both.'},
+      {term:'Mission Control',desc:'A single file that shows the status of every project in one place — what is active, what is blocked, what needs attention, what is stale. Replaces the mental overhead of tracking 5+ projects simultaneously.',example:'Example: opening ~/.claude/MISSION_CONTROL.md at 9am tells you Sophie E2E is passing, AdapttoAI needs the consulting page built, and AI Doll deck is 3 days stale.'},
+      {term:'Drift detection',desc:'Detecting when documents have fallen out of sync with each other or with the code. A proposal references a feature that no longer exists. A pricing page shows old numbers. /drift-check catches these automatically.',example:'Example: /drift-check flags that the AdapttoAI B2B deck still mentions a feature that was cut 2 weeks ago — before a client sees it.'},
+    ],
+    levels:[
+      {score:'1.0–2.5', desc:'One project, context rebuilt manually every session.'},
+      {score:'3.0–5.0', desc:'2–4 projects with CLAUDE.md, /status skill exists.'},
+      {score:'6.0–7.5', desc:'5+ projects, Mission Control live, PRODUCT_STATE.md per project.'},
+      {score:'8.0–10.0',desc:'Cross-project scanning, product-catalog.json, drift detection active.'},
+    ]
+  },
+  {
+    key:'control',label:'Control',question:'How freely can you direct it?',
+    color:'var(--green)',
+    terms:[
+      {term:'Control',desc:'The friction between having a thought and having Claude execute it. High control means you can direct Claude from anywhere — walking, on your phone, in a meeting — with zero friction. Low control means you need to be at your laptop with a terminal open.',example:'Example: at Level 9 control, you dictate a task into Wispr Flow while walking, it sends to Telegram, CCBot routes it to the Sophie tmux session, Claude starts working. You did not touch a keyboard.'},
+      {term:'CCBot',desc:'A bridge between Telegram and Claude Code. Each Telegram topic maps to a project folder. You send a message → CCBot routes it to the right Claude Code session → Claude replies in the same topic. Mac stays closed.',example:'Example: you message the sophie topic "fix the Kapso webhook idempotency issue" from your phone at 11pm. Claude runs the fix, pushes to GitHub, and replies with the result. You were watching TV.'},
+      {term:'Remote Control',desc:'Claude Code feature that gives each session a shareable link. You open the link on your phone, see what Claude is doing, and approve gates. Less powerful than CCBot — Mac must be open — but zero setup required.',example:'Example: Claude is at the Design Preview gate in /build-feature. You tap approve on your phone from a coffee shop. The build continues.'},
+      {term:'Reach',desc:'How many different places you can reach Claude from — laptop, phone, tablet, voice. Each new input surface increases reach. Reach is different from Control: Control is how easy it is, Reach is how many ways you can do it.',example:'Example: Remote Control = reach from phone browser. Telegram = reach from any messaging app. Wispr = reach from voice. More reach surfaces means more moments when Claude can be working for you.'},
+    ],
+    levels:[
+      {score:'1.0–3.0', desc:'Laptop only, terminal open, sitting at desk.'},
+      {score:'4.0–5.5', desc:'Remote Control configured, phone approval possible.'},
+      {score:'6.0–7.5', desc:'claude-mem installed, droplet provisioned.'},
+      {score:'8.0–10.0',desc:'CCBot + Telegram live, Mac can be closed, voice input wired.'},
+    ]
+  },
+  {
+    key:'self',label:'Self-improving',question:'Does it get smarter alone?',
+    color:'var(--accent2)',
+    terms:[
+      {term:'Self-improving wires',desc:'Automatic feedback loops that make the system smarter after every action. Wire 1: session-insights proposes CLAUDE.md updates. Wire 2: test failures auto-route to /fix-bug. Wire 3: knowledge base grows with decisions. Wire 4: outreach results update style rules. Each wire is a loop that runs without you.',example:'Example: you approve a CLAUDE.md diff proposed by /session-insights after a session. Next session, Claude already knows the lesson you learned today.'},
+      {term:'/session-insights',desc:'A skill that runs at the end of every session and captures: what was built, what broke, what was decided, what rules need updating. The output is a proposed CLAUDE.md diff you approve. Over time this is how the system gets smarter.',example:'Example: session-insights v2.3.0 has Step 8 — FAILURES CAPTURE. After a session where the webhook broke, it auto-proposes a new failures/ entry.'},
+      {term:'autoresearch',desc:'A system that runs Claude Code in a loop overnight — make a change, measure the result, keep if better, revert if worse, repeat. Applied to skills, it improves their output quality automatically without you doing anything.',example:'Example: autoresearch runs on /outreach with open rate as the metric. Overnight it tries 20 variations of the email structure, keeps the 3 that got better results, reverts the rest. You wake up to a better skill.'},
+      {term:'Knowledge compounding',desc:'The accumulation effect of self-improving wires all firing. Each session makes the system slightly smarter. Over 6 months of sessions, the gap between a compounding system and a static one is enormous.',example:'Example: at session 1 you had 0 lessons. At session 200 you have 41 lessons, 4 wires, and a failures/ directory. Claude at session 200 behaves like a completely different system.'},
+    ],
+    levels:[
+      {score:'1.0–3.0', desc:'No memory between sessions. Every session starts equally dumb.'},
+      {score:'4.0–5.5', desc:'/session-insights exists, lessons captured manually.'},
+      {score:'6.0–7.5', desc:'2+ wires firing. CLAUDE.md auto-updates. failures/ growing.'},
+      {score:'8.0–10.0',desc:'All 4 wires verified. autoresearch running. Skills improve themselves.'},
+    ]
+  },
+  {
+    key:'autonomy',label:'Autonomy',question:'Does it work without being asked?',
+    color:'var(--red)',
+    terms:[
+      {term:'Autonomy',desc:'Whether Claude initiates work on its own, or only works when you ask. Low autonomy means you are the trigger for everything. High autonomy means Claude runs /daily-metrics at 9am, /session-insights every Sunday, and product health checks every week — with or without you.',example:'Example: at Autonomy 9.5, the Agent SDK on your droplet runs /test-sophie every morning, sends you a Telegram message with the results, and only asks you to approve when something needs a decision.'},
+      {term:'Agent SDK',desc:'Anthropic API that lets you programmatically run Claude Code sessions from a server script. You write: run this skill, in this directory, with these permissions. The server runs it on schedule. This is what enables true unattended execution.',example:'Example: Agent SDK script on the droplet runs /daily-metrics at 9am, /product-ux-review on Monday mornings, and /test-sophie before every deploy — without your laptop open.'},
+      {term:'Scheduled tasks',desc:'Claude Code skills that run on a cron schedule. /daily-metrics at 9am. /strategy-review on the 1st of each month. /session-insights every Sunday evening. Each scheduled task is one fewer thing you have to remember to do.',example:'Example: /strategy-review fires on the 1st of March. You receive a Telegram message at 11am with a strategic review of AdapttoAI\'s last month — you did not ask for it.'},
+      {term:'Trigger',desc:'What causes a skill to run. You are a trigger when you type a command. A cron job is a trigger when it fires on schedule. A webhook is a trigger when an external event happens. High autonomy means fewer human triggers and more automatic ones.',example:'Example: a Granola transcript landing in ~/transcripts/ triggers /client-debrief automatically via a file watcher on the droplet. The call ends → debrief runs → you approve the scorecard. You did not type anything.'},
+    ],
+    levels:[
+      {score:'1.0–3.0', desc:'Everything manual. Nothing runs without you asking.'},
+      {score:'4.0–5.5', desc:'One cron job. /daily-metrics running on schedule.'},
+      {score:'6.0–7.5', desc:'3+ scheduled tasks confirmed. Desktop automation active.'},
+      {score:'8.0–10.0',desc:'Agent SDK deployed. Phone approvals only. System acts first.'},
+    ]
+  }
+];
+
+// ── RENDER ──────────────────────────────────────────────────────────────────
+function renderDims(scores){
+  const el=document.getElementById('dims-body');
+  el.innerHTML=DIM_META.map((d,i)=>`
+    <div class="dim-row">
+      <div class="dim-lbl"><span style="color:var(--muted);margin-right:6px;font-size:10px">0${i+1}</span>${d.label}</div>
+      <div class="bar-track"><div class="bar-fill ${d.cls}" style="width:${scores[i]*10}%"></div></div>
+      <div class="dim-score">${scores[i].toFixed(1)}</div>
+    </div>`).join('');
+}
+
+function renderNextLevel(currentRank, nextChar){
+  const reqs=NEXT_LEVEL_REQUIREMENTS[currentRank]||[];
+  if(!reqs.length){
+    document.getElementById('next-level-title').textContent='Maximum level reached — Ultra Instinct';
+    document.getElementById('next-level-items').innerHTML='<div style="font-size:12px;color:var(--muted);padding:4px 0">The system acts without conscious input. Nothing higher exists.</div>';
+    return;
+  }
+  document.getElementById('next-level-title').textContent=`What\'s missing for ${nextChar.name}`;
+  document.getElementById('next-level-items').innerHTML=reqs.map(r=>{
+    const d=DIM_META.find(m=>m.key===r.dim);
+    return `<div class="next-level-row">
+      <div class="next-level-icon">✗</div>
+      <div class="next-level-text"><span class="dim-tag ${d.tag}">${d.label}</span>${r.text}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderRadar(scores){
+  const svg=document.getElementById('radar-svg');
+  const cx=130,cy=130,r=90,n=6;
+  const step=2*Math.PI/n;
+  const labels=['Skills','Hooks','Multi','Control','Self','Auto'];
+  const colors=['#f5a623','#4a9eff','#9b59ff','#44ff88','#ff6b35','#ff4444'];
+  let h='';
+  [0.25,0.5,0.75,1].forEach(p=>{
+    let pts=[];
+    for(let i=0;i<n;i++){const a=-Math.PI/2+i*step;pts.push(`${cx+r*p*Math.cos(a)},${cy+r*p*Math.sin(a)}`);}
+    h+=`<polygon points="${pts.join(' ')}" fill="none" stroke="#2a2a3a" stroke-width="0.5"/>`;
+  });
+  for(let i=0;i<n;i++){const a=-Math.PI/2+i*step;h+=`<line x1="${cx}" y1="${cy}" x2="${cx+r*Math.cos(a)}" y2="${cy+r*Math.sin(a)}" stroke="#2a2a3a" stroke-width="0.5"/>`;}
+  let pts=[];
+  scores.forEach((s,i)=>{const a=-Math.PI/2+i*step;const p=s/10;pts.push(`${cx+r*p*Math.cos(a)},${cy+r*p*Math.sin(a)}`);});
+  h+=`<polygon points="${pts.join(' ')}" fill="rgba(245,166,35,0.12)" stroke="#f5a623" stroke-width="1.5"/>`;
+  scores.forEach((s,i)=>{
+    const a=-Math.PI/2+i*step;const p=s/10;
+    h+=`<circle cx="${cx+r*p*Math.cos(a)}" cy="${cy+r*p*Math.sin(a)}" r="4" fill="${colors[i]}"/>`;
+    const lx=cx+(r+18)*Math.cos(a);const ly=cy+(r+18)*Math.sin(a);
+    const anch=lx<cx-5?'end':lx>cx+5?'start':'middle';
+    h+=`<text x="${lx}" y="${ly+4}" text-anchor="${anch}" font-family="'Share Tech Mono',monospace" font-size="10" fill="#6a6a8a">${labels[i]}</text>`;
+  });
+  svg.innerHTML=h;
+}
+
+function renderInsights(data){
+  document.getElementById('insight-stack').innerHTML=`
+    <div class="insight"><div class="insight-lbl lbl-green">Strongest</div><div class="insight-val">${data.strongest}</div><div class="insight-sub">${data.strongestSub}</div></div>
+    <div class="insight"><div class="insight-lbl lbl-red">Biggest gap</div><div class="insight-val">${data.gap}</div><div class="insight-sub">${data.gapSub}</div></div>
+    <div class="insight"><div class="insight-lbl lbl-amber">Next level</div><div class="insight-val">${data.nextForm}</div><div class="insight-sub">${data.nextSub}</div></div>`;
+}
+
+function renderMoves(moves){
+  document.getElementById('moves-body').innerHTML=moves.map((m,i)=>`
+    <div class="move-row">
+      <div class="move-n">${i+1}</div>
+      <div class="move-text">${m.text}<br><span class="move-cmd">${m.cmd}</span></div>
+    </div>`).join('');
+}
+
+function renderBreakdown(scores, checkResults){
+  const dimKeys=['skills','hooks','multi','control','self','autonomy'];
+  document.getElementById('breakdown-body').innerHTML=dimKeys.map((key,i)=>{
+    const meta=BREAKDOWN_CHECKS[key];
+    const passCount=checkResults[key]||[];
+    const checks=meta.checks.map((c,j)=>{
+      const passed=passCount.includes(j);
+      return `<div class="check-row">
+        <div class="check-icon ${passed?'check-pass':'check-fail'}">${passed?'✓':'✗'}</div>
+        <div class="check-content">
+          <div class="check-title">${c.title}</div>
+          <div class="check-why">${c.why}</div>
+          ${!passed?`<div class="check-fix">→ ${(QUICK_FIXES[key]||[])[j]||'Research and implement this check'}</div>`:''}
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="dim-card">
+      <div class="dim-card-header">
+        <div><div class="dim-card-name">${meta.label}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${passCount.length} of ${meta.checks.length} checks passed</div></div>
+        <div class="dim-card-score" style="color:${meta.color}">${scores[i].toFixed(1)}</div>
+      </div>
+      <div class="dim-card-body">${checks}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderGlossary(){
+  document.getElementById('glossary-body').innerHTML=GLOSSARY.map(g=>`
+    <div class="glossary-section">
+      <div class="glossary-header">
+        <div class="glossary-dim-name" style="color:${g.color}">${g.label}</div>
+        <div class="glossary-question">${g.question}</div>
+      </div>
+      <div class="glossary-body">
+        ${g.terms.map(t=>`
+          <div class="glossary-def">
+            <div class="glossary-term">${t.term}</div>
+            <div class="glossary-desc">${t.desc}</div>
+            <div class="glossary-example">${t.example}</div>
+          </div>`).join('')}
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border2);">
+          <div style="font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px">Score Guide</div>
+          <div class="glossary-levels">
+            ${g.levels.map(l=>`<div class="glossary-level-row"><div class="gl-score">${l.score}</div><div class="gl-desc">${l.desc}</div></div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ── DATA block — skill replaces this ────────────────────────────────────────
+const DATA={
+  character:'supersaiyan',
+  characterName:'SUPER SAIYAN',
+  tagline:'"Transformed. The system carries the load."',
+  level:8.8,
+  agenticScore:3247,
+  scores:[9.5, 7.5, 8.0, 9.5, 8.5, 6.5],
+  strongest:'Skills & Control',
+  strongestSub:'System knowledge and reach are maxed. This is your foundation.',
+  gap:'Autonomy',
+  gapSub:'The system waits for you. Make it act on its own.',
+  nextForm:'Ultra Instinct',
+  nextSub:'Deploy Agent SDK. System should move before you ask.',
+  checkResults:{
+    skills:[0,1,2,3,4,5,6,7],
+    hooks:[0,1,2,3,5,7],
+    multi:[0,1,2,3,4,7],
+    control:[0,1,2,3,4,5,6],
+    self:[0,1,2,3,5,6],
+    autonomy:[0,1]
+  }
+};
+
+// ── BOOT ────────────────────────────────────────────────────────────────────
+const currentChar=CHARACTERS.find(c=>c.key===DATA.character)||CHARACTERS[6];
+const nextChar=CHARACTERS.find(c=>c.rank===currentChar.rank+1);
+
+document.getElementById('ascii-art').textContent=ASCII[DATA.character]||ASCII.supersaiyan;
+document.getElementById('char-name').textContent=DATA.characterName;
+document.getElementById('char-tagline').textContent=DATA.tagline;
+document.getElementById('char-rank').innerHTML=`Power Level <span>${currentChar.rank}</span> of ${CHARACTERS.length}`;
+document.getElementById('level-num').textContent=DATA.level.toFixed(1);
+document.getElementById('level-fill').style.width=(DATA.level*10)+'%';
+document.getElementById('score-big').textContent=DATA.agenticScore.toLocaleString();
+document.getElementById('scan-date').textContent=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+
+renderDims(DATA.scores);
+renderNextLevel(currentChar.rank, nextChar||{name:'Maximum'});
+renderRadar(DATA.scores);
+renderInsights(DATA);
+renderMoves(generateMoves(DATA.scores));
+renderBreakdown(DATA.scores, DATA.checkResults);
+const CHARACTER_DETAILS=[
+  {
+    key:'krillin', name:'Krillin', rank:1, scoreRange:'0–500', level:'1.0–2.5',
+    color:'var(--muted)', tagline:'Tries hard. Limited power. Always needs help.',
+    what:'You have Claude Code installed and you use it regularly. You might have a CLAUDE.md with a few notes, maybe one or two skills. But most of the time you are explaining context from scratch and Claude improvises your workflows.',
+    strengths:['You are already using Claude Code — most people are not','You have seen what is possible and you want more'],
+    gaps:['No reusable skills — every request starts from scratch','No hooks — rules only exist if you remember to say them','Claude forgets everything between sessions'],
+    unlock:'Write your first 5 skills and add real rules to CLAUDE.md. That is the entire unlock for Yamcha.',
+  },
+  {
+    key:'yamcha', name:'Yamcha', rank:2, scoreRange:'500–1,000', level:'2.5–4.0',
+    color:'#888', tagline:'Some skills. Good intentions. Not quite there.',
+    what:'You have built some skills and your CLAUDE.md has real rules. You know what skills are for and you invoke them deliberately. But the system is still fragile — sessions still need context rebuilt, hooks are minimal, and quality is inconsistent.',
+    strengths:['Skills exist and you use them','CLAUDE.md has behavioral rules beyond boilerplate','You understand the methodology'],
+    gaps:['Skills lack YAML frontmatter — Claude cannot auto-trigger them','No session lifecycle hooks — context rebuilds each time','Self-improving wires do not exist yet'],
+    unlock:'Add YAML frontmatter to all skills, add 4 hooks (SessionStart, SessionEnd, PrePush, PostEdit), and build /session-insights.',
+  },
+  {
+    key:'tien', name:'Tien', rank:3, scoreRange:'1,000–1,500', level:'4.0–5.5',
+    color:'#4a9eff', tagline:'Disciplined. Methodical. Solid but manually operated.',
+    what:'Your system is well-structured. 30+ skills with proper frontmatter, a real CLAUDE.md hierarchy, hooks covering session lifecycle. Claude behaves predictably. But you are still the trigger for everything — nothing happens without you asking.',
+    strengths:['30+ skills with frontmatter and descriptions','Hooks cover session lifecycle','Multiple projects with own CLAUDE.md files','Consistent, predictable behavior'],
+    gaps:['No self-improving wires — system does not learn automatically','No server — Mac must be open','Control limited to laptop and terminal'],
+    unlock:'Build /session-insights and wire it to auto-update CLAUDE.md (Wire 1). That single wire changes everything.',
+  },
+  {
+    key:'piccolo', name:'Piccolo', rank:4, scoreRange:'1,500–2,000', level:'5.5–6.5',
+    color:'#44ff88', tagline:'Smart. Strategic. The system works — you work it.',
+    what:'Your system has real methodology. Quality gates inside skills, self-improving wires starting to fire, Mission Control showing all projects at a glance. Claude feels like a strategic partner. But you still need your laptop open and you are still the primary trigger.',
+    strengths:['Quality gates in main skills','/session-insights running, lessons accumulating','Mission Control and /status working','Wire 1 firing — CLAUDE.md updates automatically'],
+    gaps:['Control limited to laptop — phone access is clunky','Autonomy near zero — everything is triggered by you','Server infrastructure not yet built'],
+    unlock:'Set up Remote Control and provision a DigitalOcean droplet. These two together let you start directing Claude from your phone.',
+  },
+  {
+    key:'vegeta', name:'Vegeta', rank:5, scoreRange:'2,000–2,500', level:'6.5–7.5',
+    color:'#9b59ff', tagline:'Powerful. Controlled. Operates independently — on your terms.',
+    what:'You have a server. You can direct Claude from your phone via Remote Control. Multiple self-improving wires are firing. The system is genuinely powerful and you operate it with precision. Vegeta works alone — and so do you.',
+    strengths:['Server running, droplet provisioned','Remote Control working from phone','2–3 self-improving wires verified','claude-mem installed, persistent memory active','7+ hooks, tight rule enforcement'],
+    gaps:['CCBot not yet installed — Mac still needs to be open sometimes','Autonomy low — Claude waits for your message','Scheduled tasks not confirmed running'],
+    unlock:'Install CCBot and Telegram. The day your Mac can be fully closed is the day you leave Vegeta.',
+  },
+  {
+    key:'goku', name:'Goku', rank:6, scoreRange:'2,500–3,000', level:'7.5–8.5',
+    color:'#f5a623', tagline:'Balanced mastery. Everything connected. Always growing.',
+    what:'CCBot is live. Mac can be closed. Telegram controls three or more project sessions. All self-improving wires are verified. The system is balanced across all six dimensions — no obvious weak points. Goku keeps training. So does your system.',
+    strengths:['CCBot + Telegram live — Mac can be off','All 4 self-improving wires verified','7+ projects managed via Mission Control','failures/ directory growing','Balanced scores across all 6 dimensions'],
+    gaps:['Scheduled tasks may not be confirmed running','Agent SDK not yet deployed on server','Autonomy is the remaining gap — system still waits for you'],
+    unlock:'Confirm Desktop Scheduled Tasks are active and add /daily-metrics cron. Autonomy is the only dimension holding you back.',
+  },
+  {
+    key:'supersaiyan', name:'Super Saiyan', rank:7, scoreRange:'3,000–3,500', level:'8.5–9.0',
+    color:'#f5a623', tagline:'Transformed. The system carries the load.',
+    what:'The transformation is real. Your system runs scheduled tasks autonomously, all wires fire, CCBot controls three sessions from Telegram, and 100+ skills encode years of methodology. Most of the work happens without you asking. You mostly review and approve.',
+    strengths:['100+ skills across 7 projects','Scheduled tasks confirmed running','CCBot + Telegram + Mac off','All 4 wires + failures/ + autoresearch planned','Control and Skills both at 9.5+'],
+    gaps:['Agent SDK not yet deployed — Claude cannot initiate full skill chains unattended','Wire 5 (autoresearch) designed but not running','Approval gateway is still terminal-based, not phone-tap'],
+    unlock:'Deploy Agent SDK on the droplet and wire autoresearch on your weakest skill. The gap to Ultra Instinct is autonomy — not intelligence.',
+  },
+  {
+    key:'ultrainstinct', name:'Ultra Instinct', rank:8, scoreRange:'3,500+', level:'9.0–10.0',
+    color:'#2dd4bf', tagline:'The system acts without conscious input. You just approve.',
+    what:'Ultra Instinct is the state where the system moves before you ask. Agent SDK runs skill chains on schedule. Granola transcripts auto-trigger /client-debrief. Failed tests auto-route to fixes. autoresearch improves skills overnight. Your role is to approve gates from your phone — not to trigger work.',
+    strengths:['Agent SDK deployed, skills run unattended','Wire 5 (autoresearch) live — skills improve overnight','Phone approval gateway — all gates are tap-to-approve','Granola → /client-debrief → /ai-scorecard fully automated','System initiates work. You do not need to ask.'],
+    gaps:['Fewer than 50 people in the world are here','If you are here, you are building the next frontier'],
+    unlock:'You are at the top. The next step is teaching others how to get here.',
+  },
+];
+
+function renderCharacters(currentKey){
+  document.getElementById('characters-body').innerHTML=CHARACTER_DETAILS.map(c=>{
+    const isCurrent=c.key===currentKey;
+    const borderStyle=isCurrent?'border:1px solid var(--accent);':'border:1px solid var(--border);';
+    const ascii=ASCII[c.key]||'';
+    return `<div style="background:var(--bg2);${borderStyle}border-radius:3px;margin-bottom:12px;overflow:hidden;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 20px;background:var(--bg3);border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:12px;">
+          ${isCurrent?'<div style="width:7px;height:7px;border-radius:50%;background:var(--accent);"></div>':'<div style="width:7px;height:7px;border-radius:50%;background:var(--border2);"></div>'}
+          <div>
+            <div style="font-size:14px;font-weight:bold;color:${c.color};font-family:var(--display);letter-spacing:2px;">${c.name.toUpperCase()}</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px;">Power Level ${c.rank} of 8 &nbsp;·&nbsp; Score ${c.scoreRange} &nbsp;·&nbsp; Level ${c.level}</div>
+          </div>
+        </div>
+        ${isCurrent?'<div style="font-size:9px;letter-spacing:2px;color:#000;background:var(--accent);padding:3px 10px;border-radius:2px;">YOU ARE HERE</div>':''}
+      </div>
+      <div style="display:grid;grid-template-columns:160px 1fr;gap:0;">
+        <div style="padding:16px;background:var(--bg4);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <pre style="font-size:9.5px;line-height:1.2;white-space:pre;color:${c.color};font-family:var(--mono);text-align:center;">${ascii}</pre>
+        </div>
+        <div style="padding:16px 20px;">
+          <div style="font-size:12px;color:var(--muted);font-style:italic;margin-bottom:12px;">"${c.tagline}"</div>
+          <div style="font-size:12px;color:var(--text);line-height:1.7;margin-bottom:12px;">${c.what}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+            <div>
+              <div style="font-size:9px;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:6px;">Strengths</div>
+              ${c.strengths.map(s=>`<div style="font-size:11px;color:var(--muted);margin-bottom:4px;display:flex;gap:6px;"><span style="color:var(--green);">✓</span>${s}</div>`).join('')}
+            </div>
+            <div>
+              <div style="font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:6px;">Gaps</div>
+              ${c.gaps.map(g=>`<div style="font-size:11px;color:var(--muted);margin-bottom:4px;display:flex;gap:6px;"><span style="color:var(--red);">✗</span>${g}</div>`).join('')}
+            </div>
+          </div>
+          ${c.rank<8?`<div style="padding:8px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:2px;font-size:11px;color:var(--accent);line-height:1.5;"><span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:3px;color:var(--muted);">Unlock next level</span>${c.unlock}</div>`:'<div style="padding:8px 12px;background:var(--bg3);border:1px solid var(--accent);border-radius:2px;font-size:11px;color:var(--accent);line-height:1.5;">'+c.unlock+'</div>'}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+renderCharacters(DATA.character);
+
+// ── COMMUNITY SECTION ──────────────────────────────────────────────────────
+const COMMUNITY_LINES={
+  krillin:     'You ran this. That means the instinct is already there.',
+  yamcha:      'You are building. Come compare notes with people further along.',
+  tien:        'Your discipline is rare. The community will accelerate you.',
+  piccolo:     'Your system is real. You deserve a room of people who get it.',
+  vegeta:      'You operate independently. Imagine what you can do with peers at the same level.',
+  goku:        'You have balanced mastery. The community needs more people like you.',
+  supersaiyan: 'You built something most people do not believe is possible.',
+  ultrainstinct:'You are at the frontier. Come help define what comes next.',
+};
+
+const QUALIFIES = DATA.level >= 8.0;
+const CHAR_INVITE_LINE = COMMUNITY_LINES[DATA.character] || COMMUNITY_LINES.goku;
+const PRIVATE_LINK = 'https://chat.whatsapp.com/JyJng7w0OxiK1MJN3jqdyh?mode=gi_t';
+const OPEN_LINK = 'https://chat.whatsapp.com/Hwnh1V0YiOi5ORgDauhwyq';
+
+// Generate Agentic ID
+const charShort = DATA.character
+  .replace('supersaiyan','SSJ').replace('ultrainstinct','UI')
+  .replace('krillin','KRL').replace('yamcha','YMC')
+  .replace('tien','TEN').replace('piccolo','PIC')
+  .replace('vegeta','VGT').replace('goku','GKU')
+  .toUpperCase().slice(0,4);
+const hashNum = Math.abs(DATA.agenticScore * 31 + Math.floor(DATA.level * 100));
+const hash = hashNum.toString(36).toUpperCase().slice(0,2);
+const AGENTIC_ID = `${charShort}-${DATA.agenticScore}-${hash}`;
+
+function renderCommunity(){
+  const section = document.createElement('div');
+  section.style.cssText = 'margin-top:14px;';
+
+  section.innerHTML = `
+    <div style="background:var(--bg2);border:1px solid ${QUALIFIES?'var(--accent)':'var(--border)'};border-radius:3px;overflow:hidden;">
+      <div style="background:var(--bg3);border-bottom:1px solid var(--border);padding:11px 20px;display:flex;align-items:center;gap:10px;">
+        <div style="width:7px;height:7px;border-radius:50%;background:${QUALIFIES?'var(--accent)':'var(--muted)'};"></div>
+        <div style="font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;">Join the Community</div>
+        <div style="margin-left:auto;font-size:9px;padding:2px 8px;border-radius:2px;background:${QUALIFIES?'var(--accent)':'var(--bg4)'};color:${QUALIFIES?'#000':'var(--muted)'};letter-spacing:2px;">${QUALIFIES?'PRIVATE ACCESS':'OPEN ACCESS'}</div>
+      </div>
+      <div style="padding:20px;">
+        <div style="font-size:13px;color:var(--accent);font-style:italic;margin-bottom:16px;line-height:1.6;">"${CHAR_INVITE_LINE}"</div>
+        <div style="font-size:12px;color:var(--text);line-height:1.9;margin-bottom:20px;">
+          <strong style="color:var(--accent);">Adapt to AI</strong> is a WhatsApp-based global community where top founders and operators share learnings and help each other on their agentic journey — using Claude Code, Cursor, or OpenClaw.<br><br>
+          Built by <strong style="color:var(--text);">Giuseppe Belpiede</strong> (exited his last company) and <strong style="color:var(--text);">Raffaello Starace</strong> (raised VC from SoftBank, +$100M ARR company in LATAM) — two tech entrepreneurs who got tired of building alone.<br><br>
+          The community includes founders currently in YC or YC alumni, and builders who have raised from top VCs.<br><br>
+          ${QUALIFIES
+            ? `<span style="color:var(--accent);">Your level qualifies you for the <strong>private group</strong>.</span><br>Direct access to top builders — many who have raised from SoftBank, Tiger Global, and YC, sold their companies, or are C-level at high-growth startups. Everyone has a repo. No lurkers.`
+            : `Join the <strong>open community</strong> — free content, learnings, and discussions. Most content is created inside the private group first and shared here.<br><span style="color:var(--muted);">Reach Level 8.0 to qualify for the private group.</span>`
+          }
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px;">
+          <a href="${QUALIFIES ? PRIVATE_LINK : OPEN_LINK}" style="display:inline-block;background:var(--accent);color:#000;font-family:var(--mono);font-size:11px;letter-spacing:2px;padding:10px 24px;border-radius:2px;text-decoration:none;text-transform:uppercase;">${QUALIFIES ? 'Join private group →' : 'Join open community →'}</a>
+          ${QUALIFIES ? '' : `<a href="${OPEN_LINK}" style="font-size:11px;color:var(--muted);text-decoration:none;">or start here →</a>`}
+        </div>
+        ${QUALIFIES ? '' : `
+        <div style="padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:2px;font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:16px;">
+          To qualify for private access: reach Level 8.0.<br>
+          Your current level is <span style="color:var(--accent);">${DATA.level.toFixed(1)}</span>. Gap: <span style="color:var(--red);">${(8.0 - DATA.level).toFixed(1)} levels</span>.
+          Check the Breakdown and Top 3 Moves tabs to close the gap.
+        </div>`}
+        <div style="padding-top:14px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);">
+          Someone else should run this? Send them <span style="color:var(--accent);">/agentic-score</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:3px;overflow:hidden;margin-top:14px;">
+      <div style="background:var(--bg3);border-bottom:1px solid var(--border);padding:11px 20px;display:flex;align-items:center;gap:10px;">
+        <div style="width:7px;height:7px;border-radius:50%;background:var(--accent);"></div>
+        <div style="font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;">Your Agentic ID</div>
+      </div>
+      <div style="padding:18px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div style="font-family:var(--display);font-size:28px;font-weight:700;color:var(--accent);letter-spacing:3px;">${AGENTIC_ID}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:5px;line-height:1.7;">
+            Saved to <span style="color:var(--text);">~/.agentic-score-id</span> on your machine.<br>
+            Cannot be faked — generated from your actual ~/.claude/ scan.<br>
+            Share this as your proof-of-work when joining.
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);text-align:right;line-height:2;">
+          Score: <span style="color:var(--text);">${DATA.agenticScore.toLocaleString()}</span><br>
+          Level: <span style="color:var(--text);">${DATA.level.toFixed(1)}</span><br>
+          Character: <span style="color:var(--accent);">${DATA.characterName}</span><br>
+          Qualifies: <span style="color:${QUALIFIES?'var(--green)':'var(--red)'};">${QUALIFIES?'Private ✓':'Open only'}</span>
+        </div>
+      </div>
+    </div>`;
+
+  document.querySelector('.container').appendChild(section);
+}
+
+renderCommunity();
+
+
