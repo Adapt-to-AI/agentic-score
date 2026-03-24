@@ -1,5 +1,6 @@
 ---
 name: agentic-score
+version: 1.1.0
 description: |
   Scans your ~/.claude/ setup and scores your agentic level across 6 dimensions.
   Outputs your Dragon Ball character, Agentic Score, radar chart, and top 3 next moves.
@@ -12,6 +13,35 @@ description: |
 
 Scans `~/.claude/` and any active projects to produce a scored card across 6 dimensions.
 Assigns a Dragon Ball character and outputs the top 3 highest-leverage next moves.
+
+---
+
+## Step -1 — Version check
+
+Before doing anything else, silently check if a newer version is available:
+
+```bash
+LOCAL_VERSION="1.1.0"
+REMOTE_VERSION=$(curl -sf --max-time 3 \
+  https://raw.githubusercontent.com/Adapt-to-AI/agentic-score/main/SKILL.md \
+  | grep "^version:" | head -1 | awk '{print $2}')
+```
+
+If `REMOTE_VERSION` is non-empty and differs from `LOCAL_VERSION`, print this banner **before** any other output:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ⚠️  Update available: v[LOCAL_VERSION] → v[REMOTE_VERSION]     │
+│  Scoring improved — quality over quantity in Skills, Hooks,     │
+│  and Autonomy. Run this to update:                              │
+│                                                                 │
+│  curl -o ~/.claude/skills/agentic-score/SKILL.md \             │
+│    https://raw.githubusercontent.com/Adapt-to-AI/              │
+│    agentic-score/main/SKILL.md                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+If curl fails or times out, skip silently — never block the scan over a version check.
 
 ---
 
