@@ -12,7 +12,7 @@
   --accent:#f5a623;--accent2:#ff6b35;
   --blue:#4a9eff;--green:#44ff88;--purple:#9b59ff;
   --red:#ff4444;--teal:#2dd4bf;
-  --text:#e8e8f0;--muted:#6a6a8a;--muted2:#4a4a6a;
+  --text:#e8e8f0;--muted:#a8a8c8;--muted2:#7878a0;
   --mono:'Share Tech Mono',monospace;
   --display:'Rajdhani',sans-serif;
 }
@@ -21,7 +21,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:1
 .container{max-width:900px;margin:0 auto;}
 
 .nav{display:flex;gap:0;margin-bottom:28px;border:1px solid var(--border);border-radius:3px;overflow:hidden;width:fit-content;}
-.nav-btn{padding:10px 24px;font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;background:transparent;color:var(--muted);border:none;cursor:pointer;transition:all 0.2s;}
+.nav-btn{padding:10px 24px;font-family:var(--mono);font-size:12.1px;letter-spacing:3px;text-transform:uppercase;background:transparent;color:var(--muted);border:none;cursor:pointer;transition:all 0.2s;}
 .nav-btn.active{background:var(--accent);color:#000;}
 .nav-btn:not(.active):hover{background:var(--bg3);color:var(--text);}
 
@@ -31,31 +31,31 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:1
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:3px;overflow:hidden;margin-bottom:14px;}
 .card-header{background:var(--bg3);border-bottom:1px solid var(--border);padding:11px 20px;display:flex;align-items:center;gap:10px;}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);}
-.card-label{font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
+.card-label{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
 
 /* CHARACTER */
 .char-grid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
 .ascii-panel{padding:24px 20px;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg4);}
-.ascii-art{font-size:10.5px;line-height:1.25;white-space:pre;color:var(--accent);font-family:var(--mono);margin-bottom:12px;}
-.char-name{font-family:var(--display);font-size:24px;font-weight:700;color:var(--accent);letter-spacing:4px;text-align:center;margin-bottom:4px;}
-.char-tagline{font-size:11px;color:var(--muted);text-align:center;font-style:italic;max-width:180px;line-height:1.5;}
-.char-rank{font-size:10px;color:var(--muted);letter-spacing:2px;text-align:center;margin-top:8px;padding:4px 12px;border:1px solid var(--border2);border-radius:2px;}
+.ascii-art{font-size:11.6px;line-height:1.25;white-space:pre;color:var(--accent);font-family:var(--mono);margin-bottom:12px;}
+.char-name{font-family:var(--display);font-size:26.4px;font-weight:700;color:var(--accent);letter-spacing:4px;text-align:center;margin-bottom:4px;}
+.char-tagline{font-size:12.1px;color:var(--muted);text-align:center;font-style:italic;max-width:180px;line-height:1.5;}
+.char-rank{font-size:11px;color:var(--muted);letter-spacing:2px;text-align:center;margin-top:8px;padding:4px 12px;border:1px solid var(--border2);border-radius:2px;}
 .char-rank span{color:var(--accent);}
 
 .score-panel{padding:24px 20px;}
-.lbl{font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
-.level-num{font-family:var(--display);font-size:56px;font-weight:700;color:var(--accent);line-height:1;}
-.level-denom{font-size:12px;color:var(--muted);}
+.lbl{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+.level-num{font-family:var(--display);font-size:61.6px;font-weight:700;color:var(--accent);line-height:1;}
+.level-denom{font-size:13.2px;color:var(--muted);}
 .level-track{height:3px;background:var(--bg3);border-radius:2px;margin-top:10px;overflow:hidden;}
 .level-fill{height:100%;background:var(--accent);border-radius:2px;}
 .divider{margin:18px 0;height:1px;background:var(--border);}
-.score-big{font-family:var(--display);font-size:34px;font-weight:700;color:var(--green);}
-.score-unit{font-size:11px;color:var(--muted);margin-left:5px;}
+.score-big{font-family:var(--display);font-size:37.4px;font-weight:700;color:var(--green);}
+.score-unit{font-size:12.1px;color:var(--muted);margin-left:5px;}
 
 /* DIMS */
 .dims-body{padding:18px 20px;}
 .dim-row{display:grid;grid-template-columns:170px 1fr 38px;align-items:center;gap:12px;margin-bottom:11px;}
-.dim-lbl{font-size:12px;color:var(--text);}
+.dim-lbl{font-size:13.2px;color:var(--text);}
 .bar-track{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
 .bar-fill{height:100%;border-radius:3px;}
 .b-skills{background:var(--accent);}
@@ -64,15 +64,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:1
 .b-control{background:var(--green);}
 .b-self{background:var(--accent2);}
 .b-autonomy{background:var(--red);}
-.dim-score{font-size:12px;color:var(--text);text-align:right;}
+.dim-score{font-size:13.2px;color:var(--text);text-align:right;}
 
 /* NEXT LEVEL BLOCK */
 .next-level-block{padding:18px 20px;border-top:1px solid var(--border);background:var(--bg4);}
-.next-level-title{font-size:10px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:14px;}
+.next-level-title{font-size:11px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:14px;}
 .next-level-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;}
-.next-level-icon{font-size:11px;color:var(--red);min-width:14px;margin-top:1px;}
-.next-level-text{font-size:12px;color:var(--text);line-height:1.6;}
-.next-level-text .dim-tag{font-size:10px;padding:1px 6px;border-radius:2px;margin-right:5px;font-family:var(--mono);}
+.next-level-icon{font-size:12.1px;color:var(--red);min-width:14px;margin-top:1px;}
+.next-level-text{font-size:13.2px;color:var(--text);line-height:1.6;}
+.next-level-text .dim-tag{font-size:11px;padding:1px 6px;border-radius:2px;margin-right:5px;font-family:var(--mono);}
 .tag-skills{background:#2a1f00;color:var(--accent);}
 .tag-hooks{background:#001a2a;color:var(--blue);}
 .tag-multi{background:#1a0030;color:var(--purple);}
@@ -84,54 +84,54 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:1
 .radar-row{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:center;padding:18px 20px;border-bottom:1px solid var(--border);}
 .insight-stack{display:flex;flex-direction:column;gap:10px;}
 .insight{padding:11px 14px;border:1px solid var(--border);border-radius:3px;background:var(--bg3);}
-.insight-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;}
+.insight-lbl{font-size:9.9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;}
 .lbl-green{color:var(--green);}
 .lbl-red{color:var(--red);}
 .lbl-amber{color:var(--accent);}
-.insight-val{font-size:13px;color:var(--text);margin-bottom:2px;}
-.insight-sub{font-size:11px;color:var(--muted);line-height:1.5;}
+.insight-val{font-size:14.3px;color:var(--text);margin-bottom:2px;}
+.insight-sub{font-size:12.1px;color:var(--muted);line-height:1.5;}
 
 /* MOVES */
 .moves-body{padding:18px 20px;}
 .move-row{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;}
-.move-n{font-family:var(--display);font-size:18px;font-weight:700;color:var(--accent);min-width:22px;line-height:1;margin-top:3px;}
-.move-text{font-size:12px;color:var(--text);line-height:1.6;}
-.move-cmd{display:inline-block;background:var(--bg3);border:1px solid var(--border);padding:2px 8px;border-radius:2px;font-size:10px;color:var(--accent);margin-top:3px;}
+.move-n{font-family:var(--display);font-size:19.8px;font-weight:700;color:var(--accent);min-width:22px;line-height:1;margin-top:3px;}
+.move-text{font-size:13.2px;color:var(--text);line-height:1.6;}
+.move-cmd{display:inline-block;background:var(--bg3);border:1px solid var(--border);padding:2px 8px;border-radius:2px;font-size:11px;color:var(--accent);margin-top:3px;}
 
 /* BREAKDOWN */
 .dim-card{background:var(--bg2);border:1px solid var(--border);border-radius:3px;margin-bottom:12px;overflow:hidden;}
 .dim-card-header{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;background:var(--bg3);border-bottom:1px solid var(--border);}
-.dim-card-name{font-size:13px;color:var(--text);font-weight:bold;}
-.dim-card-score{font-family:var(--display);font-size:22px;font-weight:700;}
+.dim-card-name{font-size:14.3px;color:var(--text);font-weight:bold;}
+.dim-card-score{font-family:var(--display);font-size:24.2px;font-weight:700;}
 .dim-card-body{padding:14px 20px;}
 .check-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--muted2);}
 .check-row:last-child{border-bottom:none;}
-.check-icon{font-size:12px;min-width:14px;margin-top:1px;}
+.check-icon{font-size:13.2px;min-width:14px;margin-top:1px;}
 .check-pass{color:var(--green);}
 .check-fail{color:var(--red);}
 .check-content{flex:1;}
-.check-title{font-size:12px;color:var(--text);margin-bottom:2px;}
-.check-why{font-size:11px;color:var(--muted);line-height:1.5;}
-.check-fix{font-size:10px;color:var(--accent);margin-top:3px;font-style:italic;}
+.check-title{font-size:13.2px;color:var(--text);margin-bottom:2px;}
+.check-why{font-size:12.1px;color:var(--muted);line-height:1.5;}
+.check-fix{font-size:11px;color:var(--accent);margin-top:3px;font-style:italic;}
 
 /* GLOSSARY */
-.glossary-intro{padding:18px 20px;font-size:12px;color:var(--muted);line-height:1.7;border-bottom:1px solid var(--border);}
+.glossary-intro{padding:18px 20px;font-size:13.2px;color:var(--muted);line-height:1.7;border-bottom:1px solid var(--border);}
 .glossary-section{border:1px solid var(--border);border-radius:3px;margin-bottom:12px;overflow:hidden;}
 .glossary-header{background:var(--bg3);padding:13px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.glossary-dim-name{font-size:13px;font-weight:bold;color:var(--text);}
-.glossary-question{font-size:11px;color:var(--muted);font-style:italic;}
+.glossary-dim-name{font-size:14.3px;font-weight:bold;color:var(--text);}
+.glossary-question{font-size:12.1px;color:var(--muted);font-style:italic;}
 .glossary-body{padding:16px 20px;}
 .glossary-def{margin-bottom:16px;}
 .glossary-def:last-child{margin-bottom:0;}
-.glossary-term{font-size:11px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
-.glossary-desc{font-size:12px;color:var(--text);line-height:1.7;}
-.glossary-example{font-size:11px;color:var(--muted);margin-top:4px;padding-left:12px;border-left:2px solid var(--border2);line-height:1.6;}
+.glossary-term{font-size:12.1px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.glossary-desc{font-size:13.2px;color:var(--text);line-height:1.7;}
+.glossary-example{font-size:12.1px;color:var(--muted);margin-top:4px;padding-left:12px;border-left:2px solid var(--border2);line-height:1.6;}
 .glossary-levels{margin-top:10px;display:flex;flex-direction:column;gap:4px;}
-.glossary-level-row{display:grid;grid-template-columns:40px 1fr;gap:10px;font-size:11px;}
+.glossary-level-row{display:grid;grid-template-columns:40px 1fr;gap:10px;font-size:12.1px;}
 .gl-score{color:var(--accent);}
 .gl-desc{color:var(--muted);}
 
-.footer{text-align:center;padding:16px;font-size:10px;color:var(--muted);letter-spacing:2px;}
+.footer{text-align:center;padding:16px;font-size:11px;color:var(--muted);letter-spacing:2px;}
 .footer a{color:var(--accent);text-decoration:none;}
 
 @media(max-width:600px){
@@ -154,7 +154,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:1
 <!-- PAGE 1 -->
 <div id="page-overview" class="page active">
   <div class="card">
-    <div class="card-header"><div class="dot"></div><div class="card-label">Character Profile</div><div style="margin-left:auto;font-size:9px;letter-spacing:2px;color:var(--muted)">by adaptto.ai</div><div style="margin-left:auto;font-size:10px;color:var(--muted)" id="scan-date"></div></div>
+    <div class="card-header"><div class="dot"></div><div class="card-label">Character Profile</div><div style="margin-left:auto;font-size:9.9px;letter-spacing:2px;color:var(--muted)">by adaptto.ai</div><div style="margin-left:auto;font-size:11px;color:var(--muted)" id="scan-date"></div></div>
     <div class="char-grid">
       <div class="ascii-panel">
         <pre class="ascii-art" id="ascii-art"></pre>
@@ -168,7 +168,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:1
         <div class="level-denom">/ 10.0</div>
         <div class="level-track"><div class="level-fill" id="level-fill"></div></div>
         <div class="divider"></div>
-        <div class="lbl">Agentic Score <span style="color:var(--muted2);font-size:9px;margin-left:6px">max ~5,000</span></div>
+        <div class="lbl">Agentic Score <span style="color:var(--muted2);font-size:9.9px;margin-left:6px">max ~5,000</span></div>
         <span class="score-big" id="score-big"></span><span class="score-unit">pts</span>
       </div>
     </div>
@@ -198,8 +198,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:1
 <!-- PAGE 3: CHARACTERS -->
 <div id="page-characters" class="page">
   <div class="card">
-    <div class="card-header"><div class="dot"></div><div class="card-label">The Eight Characters</div><div style="margin-left:auto;font-size:9px;letter-spacing:2px;color:var(--muted)">weakest → strongest</div></div>
-    <div style="padding:16px 20px;font-size:11px;color:var(--muted);line-height:1.7;border-bottom:1px solid var(--border)">Each character represents a stage of agentic evolution. You cannot skip stages entirely — the skills, hooks, and infrastructure build on each other. Your character is determined by your Agentic Score and overall level.</div>
+    <div class="card-header"><div class="dot"></div><div class="card-label">The Eight Characters</div><div style="margin-left:auto;font-size:9.9px;letter-spacing:2px;color:var(--muted)">weakest → strongest</div></div>
+    <div style="padding:16px 20px;font-size:12.1px;color:var(--muted);line-height:1.7;border-bottom:1px solid var(--border)">Each character represents a stage of agentic evolution. You cannot skip stages entirely — the skills, hooks, and infrastructure build on each other. Your character is determined by your Agentic Score and overall level.</div>
   </div>
   <div id="characters-body"></div>
 </div>
@@ -601,7 +601,7 @@ function renderDims(scores){
   const el=document.getElementById('dims-body');
   el.innerHTML=DIM_META.map((d,i)=>`
     <div class="dim-row">
-      <div class="dim-lbl"><span style="color:var(--muted);margin-right:6px;font-size:10px">0${i+1}</span>${d.label}</div>
+      <div class="dim-lbl"><span style="color:var(--muted);margin-right:6px;font-size:11px">0${i+1}</span>${d.label}</div>
       <div class="bar-track"><div class="bar-fill ${d.cls}" style="width:${scores[i]*10}%"></div></div>
       <div class="dim-score">${scores[i].toFixed(1)}</div>
     </div>`).join('');
@@ -611,7 +611,7 @@ function renderNextLevel(currentRank, nextChar){
   const reqs=NEXT_LEVEL_REQUIREMENTS[currentRank]||[];
   if(!reqs.length){
     document.getElementById('next-level-title').textContent='Maximum level reached — Ultra Instinct';
-    document.getElementById('next-level-items').innerHTML='<div style="font-size:12px;color:var(--muted);padding:4px 0">The system acts without conscious input. Nothing higher exists.</div>';
+    document.getElementById('next-level-items').innerHTML='<div style="font-size:13.2px;color:var(--muted);padding:4px 0">The system acts without conscious input. Nothing higher exists.</div>';
     return;
   }
   document.getElementById('next-level-title').textContent=`What\'s missing for ${nextChar.name}`;
@@ -645,7 +645,7 @@ function renderRadar(scores){
     h+=`<circle cx="${cx+r*p*Math.cos(a)}" cy="${cy+r*p*Math.sin(a)}" r="4" fill="${colors[i]}"/>`;
     const lx=cx+(r+18)*Math.cos(a);const ly=cy+(r+18)*Math.sin(a);
     const anch=lx<cx-5?'end':lx>cx+5?'start':'middle';
-    h+=`<text x="${lx}" y="${ly+4}" text-anchor="${anch}" font-family="'Share Tech Mono',monospace" font-size="10" fill="#6a6a8a">${labels[i]}</text>`;
+    h+=`<text x="${lx}" y="${ly+4}" text-anchor="${anch}" font-family="'Share Tech Mono',monospace" font-size="10" fill="#a8a8c8">${labels[i]}</text>`;
   });
   svg.innerHTML=h;
 }
@@ -683,7 +683,7 @@ function renderBreakdown(scores, checkResults){
     }).join('');
     return `<div class="dim-card">
       <div class="dim-card-header">
-        <div><div class="dim-card-name">${meta.label}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${passCount.length} of ${meta.checks.length} checks passed</div></div>
+        <div><div class="dim-card-name">${meta.label}</div><div style="font-size:12.1px;color:var(--muted);margin-top:2px">${passCount.length} of ${meta.checks.length} checks passed</div></div>
         <div class="dim-card-score" style="color:${meta.color}">${scores[i].toFixed(1)}</div>
       </div>
       <div class="dim-card-body">${checks}</div>
@@ -706,7 +706,7 @@ function renderGlossary(){
             <div class="glossary-example">${t.example}</div>
           </div>`).join('')}
         <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border2);">
-          <div style="font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px">Score Guide</div>
+          <div style="font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px">Score Guide</div>
           <div class="glossary-levels">
             ${g.levels.map(l=>`<div class="glossary-level-row"><div class="gl-score">${l.score}</div><div class="gl-desc">${l.desc}</div></div>`).join('')}
           </div>
@@ -769,7 +769,7 @@ const CHARACTER_DETAILS=[
   },
   {
     key:'yamcha', name:'Yamcha', rank:2, scoreRange:'500–1,000', level:'2.5–4.0',
-    color:'#888', tagline:'Some skills. Good intentions. Not quite there.',
+    color:'#a0a0a0', tagline:'Some skills. Good intentions. Not quite there.',
     what:'You have built some skills and your CLAUDE.md has real rules. You know what skills are for and you invoke them deliberately. But the system is still fragile — sessions still need context rebuilt, hooks are minimal, and quality is inconsistent.',
     strengths:['Skills exist and you use them','CLAUDE.md has behavioral rules beyond boilerplate','You understand the methodology'],
     gaps:['Skills lack YAML frontmatter — Claude cannot auto-trigger them','No session lifecycle hooks — context rebuilds each time','Self-improving wires do not exist yet'],
@@ -835,30 +835,30 @@ function renderCharacters(currentKey){
         <div style="display:flex;align-items:center;gap:12px;">
           ${isCurrent?'<div style="width:7px;height:7px;border-radius:50%;background:var(--accent);"></div>':'<div style="width:7px;height:7px;border-radius:50%;background:var(--border2);"></div>'}
           <div>
-            <div style="font-size:14px;font-weight:bold;color:${c.color};font-family:var(--display);letter-spacing:2px;">${c.name.toUpperCase()}</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px;">Power Level ${c.rank} of 8 &nbsp;·&nbsp; Score ${c.scoreRange} &nbsp;·&nbsp; Level ${c.level}</div>
+            <div style="font-size:15.4px;font-weight:bold;color:${c.color};font-family:var(--display);letter-spacing:2px;">${c.name.toUpperCase()}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">Power Level ${c.rank} of 8 &nbsp;·&nbsp; Score ${c.scoreRange} &nbsp;·&nbsp; Level ${c.level}</div>
           </div>
         </div>
-        ${isCurrent?'<div style="font-size:9px;letter-spacing:2px;color:#000;background:var(--accent);padding:3px 10px;border-radius:2px;">YOU ARE HERE</div>':''}
+        ${isCurrent?'<div style="font-size:9.9px;letter-spacing:2px;color:#000;background:var(--accent);padding:3px 10px;border-radius:2px;">YOU ARE HERE</div>':''}
       </div>
       <div style="display:grid;grid-template-columns:160px 1fr;gap:0;">
         <div style="padding:16px;background:var(--bg4);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;">
-          <pre style="font-size:9.5px;line-height:1.2;white-space:pre;color:${c.color};font-family:var(--mono);text-align:center;">${ascii}</pre>
+          <pre style="font-size:10.5px;line-height:1.2;white-space:pre;color:${c.color};font-family:var(--mono);text-align:center;">${ascii}</pre>
         </div>
         <div style="padding:16px 20px;">
-          <div style="font-size:12px;color:var(--muted);font-style:italic;margin-bottom:12px;">"${c.tagline}"</div>
-          <div style="font-size:12px;color:var(--text);line-height:1.7;margin-bottom:12px;">${c.what}</div>
+          <div style="font-size:13.2px;color:var(--muted);font-style:italic;margin-bottom:12px;">"${c.tagline}"</div>
+          <div style="font-size:13.2px;color:var(--text);line-height:1.7;margin-bottom:12px;">${c.what}</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
             <div>
-              <div style="font-size:9px;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:6px;">Strengths</div>
-              ${c.strengths.map(s=>`<div style="font-size:11px;color:var(--muted);margin-bottom:4px;display:flex;gap:6px;"><span style="color:var(--green);">✓</span>${s}</div>`).join('')}
+              <div style="font-size:9.9px;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:6px;">Strengths</div>
+              ${c.strengths.map(s=>`<div style="font-size:12.1px;color:var(--muted);margin-bottom:4px;display:flex;gap:6px;"><span style="color:var(--green);">✓</span>${s}</div>`).join('')}
             </div>
             <div>
-              <div style="font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:6px;">Gaps</div>
-              ${c.gaps.map(g=>`<div style="font-size:11px;color:var(--muted);margin-bottom:4px;display:flex;gap:6px;"><span style="color:var(--red);">✗</span>${g}</div>`).join('')}
+              <div style="font-size:9.9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:6px;">Gaps</div>
+              ${c.gaps.map(g=>`<div style="font-size:12.1px;color:var(--muted);margin-bottom:4px;display:flex;gap:6px;"><span style="color:var(--red);">✗</span>${g}</div>`).join('')}
             </div>
           </div>
-          ${c.rank<8?`<div style="padding:8px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:2px;font-size:11px;color:var(--accent);line-height:1.5;"><span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:3px;color:var(--muted);">Unlock next level</span>${c.unlock}</div>`:'<div style="padding:8px 12px;background:var(--bg3);border:1px solid var(--accent);border-radius:2px;font-size:11px;color:var(--accent);line-height:1.5;">'+c.unlock+'</div>'}
+          ${c.rank<8?`<div style="padding:8px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:2px;font-size:12.1px;color:var(--accent);line-height:1.5;"><span style="font-size:9.9px;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:3px;color:var(--muted);">Unlock next level</span>${c.unlock}</div>`:'<div style="padding:8px 12px;background:var(--bg3);border:1px solid var(--accent);border-radius:2px;font-size:12.1px;color:var(--accent);line-height:1.5;">'+c.unlock+'</div>'}
         </div>
       </div>
     </div>`;
@@ -903,12 +903,12 @@ function renderCommunity(){
     <div style="background:var(--bg2);border:1px solid ${QUALIFIES?'var(--accent)':'var(--border)'};border-radius:3px;overflow:hidden;">
       <div style="background:var(--bg3);border-bottom:1px solid var(--border);padding:11px 20px;display:flex;align-items:center;gap:10px;">
         <div style="width:7px;height:7px;border-radius:50%;background:${QUALIFIES?'var(--accent)':'var(--muted)'};"></div>
-        <div style="font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;">Join the Community</div>
-        <div style="margin-left:auto;font-size:9px;padding:2px 8px;border-radius:2px;background:${QUALIFIES?'var(--accent)':'var(--bg4)'};color:${QUALIFIES?'#000':'var(--muted)'};letter-spacing:2px;">${QUALIFIES?'PRIVATE ACCESS':'OPEN ACCESS'}</div>
+        <div style="font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;">Join the Community</div>
+        <div style="margin-left:auto;font-size:9.9px;padding:2px 8px;border-radius:2px;background:${QUALIFIES?'var(--accent)':'var(--bg4)'};color:${QUALIFIES?'#000':'var(--muted)'};letter-spacing:2px;">${QUALIFIES?'PRIVATE ACCESS':'OPEN ACCESS'}</div>
       </div>
       <div style="padding:20px;">
-        <div style="font-size:13px;color:var(--accent);font-style:italic;margin-bottom:16px;line-height:1.6;">"${CHAR_INVITE_LINE}"</div>
-        <div style="font-size:12px;color:var(--text);line-height:1.9;margin-bottom:20px;">
+        <div style="font-size:14.3px;color:var(--accent);font-style:italic;margin-bottom:16px;line-height:1.6;">"${CHAR_INVITE_LINE}"</div>
+        <div style="font-size:13.2px;color:var(--text);line-height:1.9;margin-bottom:20px;">
           <strong style="color:var(--accent);">Adapt to AI</strong> is a WhatsApp-based global community where top founders and operators share learnings and help each other on their agentic journey — using Claude Code, Cursor, or OpenClaw.<br><br>
           Built by <strong style="color:var(--text);">Giuseppe Belpiede</strong> (exited his last company) and <strong style="color:var(--text);">Raffaello Starace</strong> (raised VC from SoftBank, +$100M ARR company in LATAM) — two tech entrepreneurs who got tired of building alone.<br><br>
           Top founders and C-levels who have scaled high-growth companies globally — backed by SoftBank, Tiger Global, and YCombinator.<br><br>
@@ -918,16 +918,16 @@ function renderCommunity(){
           }
         </div>
         <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px;">
-          <a href="${QUALIFIES ? PRIVATE_LINK : OPEN_LINK}" style="display:inline-block;background:var(--accent);color:#000;font-family:var(--mono);font-size:11px;letter-spacing:2px;padding:10px 24px;border-radius:2px;text-decoration:none;text-transform:uppercase;">${QUALIFIES ? 'Join private group →' : 'Join open community →'}</a>
-          ${QUALIFIES ? '' : `<a href="${OPEN_LINK}" style="font-size:11px;color:var(--muted);text-decoration:none;">or start here →</a>`}
+          <a href="${QUALIFIES ? PRIVATE_LINK : OPEN_LINK}" style="display:inline-block;background:var(--accent);color:#000;font-family:var(--mono);font-size:12.1px;letter-spacing:2px;padding:10px 24px;border-radius:2px;text-decoration:none;text-transform:uppercase;">${QUALIFIES ? 'Join private group →' : 'Join open community →'}</a>
+          ${QUALIFIES ? '' : `<a href="${OPEN_LINK}" style="font-size:12.1px;color:var(--muted);text-decoration:none;">or start here →</a>`}
         </div>
         ${QUALIFIES ? '' : `
-        <div style="padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:2px;font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:16px;">
+        <div style="padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:2px;font-size:12.1px;color:var(--muted);line-height:1.6;margin-bottom:16px;">
           To qualify for private access: reach Level 8.0.<br>
           Your current level is <span style="color:var(--accent);">${DATA.level.toFixed(1)}</span>. Gap: <span style="color:var(--red);">${(8.0 - DATA.level).toFixed(1)} levels</span>.
           Check the Breakdown and Top 3 Moves tabs to close the gap.
         </div>`}
-        <div style="padding-top:14px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);">
+        <div style="padding-top:14px;border-top:1px solid var(--border);font-size:12.1px;color:var(--muted);">
           Someone else should run this? Send them <span style="color:var(--accent);">/agentic-score</span>
         </div>
       </div>
@@ -936,18 +936,18 @@ function renderCommunity(){
     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:3px;overflow:hidden;margin-top:14px;">
       <div style="background:var(--bg3);border-bottom:1px solid var(--border);padding:11px 20px;display:flex;align-items:center;gap:10px;">
         <div style="width:7px;height:7px;border-radius:50%;background:var(--accent);"></div>
-        <div style="font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;">Your Agentic ID</div>
+        <div style="font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;">Your Agentic ID</div>
       </div>
       <div style="padding:18px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
         <div>
-          <div style="font-family:var(--display);font-size:28px;font-weight:700;color:var(--accent);letter-spacing:3px;">${AGENTIC_ID}</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:5px;line-height:1.7;">
+          <div style="font-family:var(--display);font-size:30.8px;font-weight:700;color:var(--accent);letter-spacing:3px;">${AGENTIC_ID}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:5px;line-height:1.7;">
             Saved to <span style="color:var(--text);">~/.agentic-score-id</span> on your machine.<br>
             Cannot be faked — generated from your actual ~/.claude/ scan.<br>
             Share this as your proof-of-work when joining.
           </div>
         </div>
-        <div style="font-size:10px;color:var(--muted);text-align:right;line-height:2;">
+        <div style="font-size:11px;color:var(--muted);text-align:right;line-height:2;">
           Score: <span style="color:var(--text);">${DATA.agenticScore.toLocaleString()}</span><br>
           Level: <span style="color:var(--text);">${DATA.level.toFixed(1)}</span><br>
           Character: <span style="color:var(--accent);">${DATA.characterName}</span><br>
