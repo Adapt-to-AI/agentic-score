@@ -351,6 +351,7 @@ Progress bar format (20 chars wide):
 - Never guess — only score what you can verify by reading actual files
 - If ~/.claude/ doesn't exist, score everything 0 and explain how to start
 - The top 3 moves must be specific and actionable — not "improve your skills"
+- **TOP 3 MOVES RULE: Only suggest moves whose underlying check FAILED in the scan.** Never suggest setting up something the user already has. Cross-reference your scan results before writing each move.
 - Character description should feel like a compliment, not a roast
 - Always show the next form and what unlocks it — the gap is the point
 
